@@ -1,0 +1,122 @@
+@import 'stylesheets/themes/_main.scss';
+.buttonCtn {
+  background-color: whitesmoke;
+  cursor: pointer;
+  border-width: 2px;
+  border-radius: 3px;
+  border-style: solid;
+  border-color: #003152;
+  text-align: center;
+  display: inline-block;
+  vertical-align: middle;
+  &.expanded {
+    width: 100%;
+    height: 100%;
+    &.inverse {
+      background-color: #003152;
+    }
+    &.danger {
+      background-color: #C05D4F;
+      border-color: #C05D4F;
+    }
+  }
+  &.big {
+    width: 200px;
+    line-height: 60px;
+    &.inverse {
+      background-color: #003152;
+    }
+    &.danger {
+      background-color: #C05D4F;
+      border-color: #C05D4F;
+    }
+  }
+  &.medium {
+    width: 150px;
+    line-height: 40px;
+    &.inverse {
+      background-color: #003152;
+    }
+    &.danger {
+      background-color: #C05D4F;
+      border-color: #C05D4F;
+    }
+  }
+  &.small {
+    width: 120px;
+    line-height: 30px;
+    &.inverse {
+      background-color: #003152;
+    }
+    &.danger {
+      background-color: #C05D4F;
+      border-color: #C05D4F;
+    }
+  }
+  &.icon {
+    width: 60px;
+    height: 60px;
+    &.inverse {
+      background-color: #003152;
+    }
+    &.danger {
+      background-color: #C05D4F;
+      border-color: #C05D4F;
+    }
+  }
+}
+.label {
+  display: inline-block;
+  vertical-align: middle;
+  font-family: Roboto-Black;
+  &.expanded {
+    font-size: 25px;
+    color: #003152;
+    &.inverse {
+      color: whitesmoke;
+    }
+    &.danger {
+      color: whitesmoke;
+    }
+  }
+  &.big {
+    font-size: 25px;
+    color: #003152;
+    &.inverse {
+      color: whitesmoke;
+    }
+    &.danger {
+      color: whitesmoke;
+    }
+  }
+  &.medium {
+    font-size: 15px;
+    color: #003152;
+    &.inverse {
+      color: whitesmoke;
+    }
+    &.danger {
+      color: whitesmoke;
+    }
+  }
+  &.small {
+    font-size: 13px;
+    color: #003152;
+    &.inverse {
+      color: whitesmoke;
+    }
+    &.danger {
+      color: whitesmoke;
+    }
+  }
+  &.icon {
+    font-size: 30px;
+    color: #003152;
+    &.inverse {
+      color: whitesmoke;
+    }
+    &.danger {
+      color: whitesmoke;
+    }
+  }
+}

@@ -1,0 +1,26 @@
+.table{
+  width: 100%;
+  table-layout: fixed;
+}
+.thead{
+  text-align: center;
+}
+.table-column{
+  background: aliceblue;
+  &.ID{
+    width: 10%;
+  }
+  &.Codigo{
+    width: 10%;
+  }
+  &.Nombre{
+    width: 56%;
+  }
+  &.quantity{
+    width: 12%;
+  }
+  &.meassure{
+    width: 12%;
+  }
+}
+

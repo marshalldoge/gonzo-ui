@@ -1,0 +1,36 @@
+@import 'stylesheets/themes/_main.scss';
+
+.loginFormCtn {
+  min-height: 100%;
+}
+.alert {
+  padding-right: 25%;
+  padding-left: 25%;
+}
+.usernameInput {
+  border-width: 0 0 1px 0;
+  border-color: red green gray red;
+  border-style: solid;
+  height: 45px;
+  width: 100%;
+  color: #003152;
+  font-weight: 400;
+  font-size: 20px;
+  text-align: center;
+  padding-bottom: 5px;
+  &.despcription {
+    height: 80px;
+    width: 100%;
+  }
+}
+.usernameInput:focus {
+  outline: none;
+}
+::-webkit-input-placeholder {
+  color: #003152;
+  font-weight: 200;
+  font-size: 20px;
+  vertical-align: top;
+  text-align: center;
+}
+

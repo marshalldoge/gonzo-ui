@@ -1,0 +1,48 @@
+/*
+.ant-table-body{
+  width: 100%;
+  background: black;
+  //table-layout: fixed;
+}
+.ant-table-thead{
+  text-align: center;
+  width: 100%;
+}
+ */
+
+.ant-table-wrapper {
+  overflow-x: scroll;
+}
+.ant-table-fixed {
+  table-layout: fixed;
+}
+
+.ant-table-tbody > tr > td {
+  word-wrap: break-word;
+  word-break: break-all;
+}
+.table-column{
+  background: aliceblue;
+  &.id{
+    //width: 10%;
+  }
+  &.fullName{
+    //width: 30%;
+  }
+  &.username{
+    //width: 10%;
+  }
+  &.password{
+    //width: 20%;
+    overflow: hidden;
+    background: green;
+    font-size: 20px;
+  }
+  &.role{
+    //width: 10%;
+  }
+  &.location{
+    //width: 20%;
+  }
+}
+
