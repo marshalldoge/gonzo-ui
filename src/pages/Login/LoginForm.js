@@ -44,6 +44,8 @@ class LoginForm extends Component {
 	         .then(function (res) {
             if (res.success === true) {
                 console.log("Success");
+	            const {from} = me.props.location.state || {from: {pathname: "/"}};
+	            me.props.history.push(from);
             } else {
                 me.setState({displayAlert:1});
             }

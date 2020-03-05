@@ -15,6 +15,7 @@ const Login = React.lazy(() => import('./pages/Login/Login'));
 
 const loading = () => <div>Loading...</div>;
 const Authenticate= ()=>{
+	return true;
 	console.log("Authenticando...");
 	if(getCookie("JWT") !== undefined){
 		console.log("Usuario authenticado :)");
