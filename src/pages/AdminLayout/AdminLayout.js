@@ -114,7 +114,7 @@ class AdminLayout extends Component {
         //console.log("LOADING: ",this.state.loadedServices);
         return (
             
-            <Layout className="layout">
+            <Layout className="layout" style = {{height:"100vh"}}>
             <br/>
             <Header className="header-container-wrapper">
               <div className="logo" />
@@ -154,7 +154,21 @@ class AdminLayout extends Component {
     </Row>
 <br/>
 <br/>
+<br/>
+<br/>
+<br/>
+<br/>
 tabla
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
 <br/>
 <Row justify="end">
       <Col span={4}></Col>
