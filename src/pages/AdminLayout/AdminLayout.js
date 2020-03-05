@@ -91,6 +91,11 @@ class AdminLayout extends Component {
                         <Title level={4}>Préstamo de Películas</Title>
                     </Col>
                 </Row>
+	            <Row>
+		            <Col span={24}>
+			            <MovieForm complete={false}/>
+		            </Col>
+	            </Row>
 
                 <br/>
 
@@ -172,7 +177,7 @@ class AdminLayout extends Component {
                     </Row>
 
                 <br/>
-                <MovieForm/>
+                <MovieForm complete={true}/>
                 <br/>
 
                 <Row justify="end">
@@ -186,7 +191,7 @@ class AdminLayout extends Component {
                             <option value="4">4</option>
                         </select>
                     </Col>
-                    <Col span={10}><input className="button3" type="submit" value="Realizar préstamo" /></Col>
+                    <Col span={10}><input className="button3" onClick={this.openNotificationModal} type="submit" value="Realizar préstamo" /></Col>
                 </Row>
 
             </div>

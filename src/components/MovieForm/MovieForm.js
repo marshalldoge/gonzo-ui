@@ -21,6 +21,10 @@ class MovieForm extends Component {
 		this.getMovies();
 	}
 
+	styles = {
+		height: this.props.complete ? "320px" : "200px"
+	}
+
 	getMovies = () => {
 		let me = this;
 		//console.log("Received values of form: ", values);
@@ -75,25 +79,36 @@ class MovieForm extends Component {
 		});
 	};
 
+	Duration = (idx) => {
+		return (
+			 <Col span={3}>
+				 {this.state.movies[idx].duration}
+			 </Col>
+		);
+	};
+	Buttons = (idx) => {
+		return (
+			 <Col span={4}>
+				 <Button
+					  type="primary" shape="circle" icon={<PlusCircleOutlined />}
+					  onClick={e => (this.updateUsed(e,idx,1))}
+				 />
+				 <Button
+					  type="primary" shape="circle" icon={<MinusCircleOutlined />}
+					  onClick={e => (this.updateUsed(e,idx,-1))}
+				 />
+			 </Col>
+		);
+	};
+
 	movieCtn = (idx) => {
 		return (
 			 <Row key = {idx} justify="center" align="middle">
 				 <Col span={10}>
 					 {this.state.movies[idx].name}
 				 </Col>
-				 <Col span={3}>
-					 {this.state.movies[idx].duration}
-				 </Col>
-				 <Col span={4}>
-					 <Button
-						  type="primary" shape="circle" icon={<PlusCircleOutlined />}
-						  onClick={e => (this.updateUsed(e,idx,1))}
-					 />
-					 <Button
-						  type="primary" shape="circle" icon={<MinusCircleOutlined />}
-						  onClick={e => (this.updateUsed(e,idx,-1))}
-					 />
-				 </Col>
+				 {this.props.complete && this.Duration(idx)}
+				 {this.props.complete && this.Buttons(idx)}
 				 <Col span={2}>
 					 {this.state.movies[idx].used}
 				 </Col>
@@ -112,7 +127,7 @@ class MovieForm extends Component {
 
 	render() {
 		return (
-			 <Row className={"FormCtn"}>
+			 <Row className={"FormCtn"} style={this.styles}>
 				 <Col span={24}>
 					 {this.formTable()}
 				 </Col>
