@@ -15,6 +15,8 @@ import { Row,Col,Button,Layout, Menu, Breadcrumb, Typography } from 'antd';
 const { Header, Content, Footer } = Layout;
 const {Title} = Typography;
 
+const MovieForm = React.lazy(() => import("../../components/MovieForm/MovieForm"));
+
 class AdminLayout extends Component {
     constructor(props) {
         //console.log("PROPS comming in ADMINLAYOUT: ",props);
@@ -28,7 +30,7 @@ class AdminLayout extends Component {
         successfulLoad:true,
         servicesToLoad: 2,
         loadedServices: 0,
-        modalIsOpen:true
+        modalIsOpen:false
     };
 
     componentDidMount = () => {
@@ -48,7 +50,7 @@ class AdminLayout extends Component {
              </div>
         );
     };
-    
+
     openNotificationModal = () => {
         this.setState({modalIsOpen:true})
     };
@@ -76,7 +78,7 @@ class AdminLayout extends Component {
             }
         };
         return (
-            <Modal 
+            <Modal
                 isOpen={this.state.modalIsOpen}
                 onAfterOpen={afterOpenModal}
                 onRequestClose={this.closeNotificationModal}
@@ -89,7 +91,7 @@ class AdminLayout extends Component {
                         <Title level={4}>Préstamo de Películas</Title>
                     </Col>
                 </Row>
-                
+
                 <br/>
 
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
@@ -98,7 +100,7 @@ class AdminLayout extends Component {
                         <label className="txt2">Costo: 30 Bs</label>
                     </Col>
                     <Col className="gutter-row" span={6}>
-                        <label className="txt2">Dias: </label>  
+                        <label className="txt2">Dias: </label>
                         <select id="cantidad" className="txt2">
                             <option value="1">1</option>
                             <option value="2">2</option>
@@ -141,23 +143,23 @@ class AdminLayout extends Component {
                         defaultSelectedKeys={['2']}
                         style={{ lineHeight: '64px' }}
                     >
-        
+
                         <Row justify="space-around">
                             <Col span={7}><Menu.Item className="button" key="1">Gestionar clientes</Menu.Item></Col>
                             <Col span={7}><Menu.Item className="button" key="2">Gestionar préstamos</Menu.Item></Col>
                             <Col span={7}><Menu.Item className="button" key="3">Gestionar películas</Menu.Item></Col>
                         </Row>
-        
+
                     </Menu>
-        
+
                 </Header>
 
                 <br/>
                 <Content style={{ padding: '0 50px' }}>
                     <div className="site-layout-content">
-        
+
                     <Row justify="start">
-                        <Col span={3}>  
+                        <Col span={3}>
                             <select id="categorias" className="txt">
                                 <option value="comedia">comedia</option>
                                 <option value="terror">terror</option>
@@ -170,28 +172,13 @@ class AdminLayout extends Component {
                     </Row>
 
                 <br/>
+                <MovieForm/>
                 <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                tabla
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-        
+
                 <Row justify="end">
                     <Col span={4}></Col>
                     <Col span={4}><label className="txt">Costo: 30 Bs</label></Col>
-                    <Col span={4}><label className="txt">Dias: </label>  
+                    <Col span={4}><label className="txt">Dias: </label>
                         <select id="cantidad" className="txt">
                             <option value="1">1</option>
                             <option value="2">2</option>
@@ -199,17 +186,17 @@ class AdminLayout extends Component {
                             <option value="4">4</option>
                         </select>
                     </Col>
-                    <Col span={4}><input className="button3" type="submit" value="Realizar préstamo" /></Col>
+                    <Col span={10}><input className="button3" type="submit" value="Realizar préstamo" /></Col>
                 </Row>
-        
+
             </div>
 
             <br/>
             <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
             {this.NotificationModal()}
-        
+
             </Content>
-        
+
         </Layout>
         );
     }
