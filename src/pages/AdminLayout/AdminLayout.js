@@ -67,8 +67,9 @@ class AdminLayout extends Component {
                 <Menu.Item key="3">nav 3</Menu.Item>
               </Menu>
             </Header>
+            <br/>
             <Content style={{ padding: '0 50px' }}>
-            <BR></BR>
+           
               <div className="site-layout-content">Content</div>
             </Content>
             <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
