@@ -21,6 +21,7 @@ class AdminLayout extends Component {
     constructor(props) {
         //console.log("PROPS comming in ADMINLAYOUT: ",props);
         super(props);
+	    this.updateUsed = this.updateUsed.bind(this);
     }
 
     state = {
@@ -30,15 +31,138 @@ class AdminLayout extends Component {
         successfulLoad:true,
         servicesToLoad: 2,
         loadedServices: 0,
-        modalIsOpen:false
+        modalIsOpen:false,
+	    movies:[],
+	    cost: 0,
+	    nit: "",
+	    prices: []
     };
 
     componentDidMount = () => {
-
+    	this.getMovies();
+    	this.setPrice();
     };
 
+	updateUsed(e,idx,number){
+		let me = this;
+		me.setState ((prevState) =>{
+			console.log("prevstate: ",prevState.movies);
+			if(number > 0){
+				//prevState.movies[idx].used = Math.min(prevState.movies[idx].used + number,prevState.movies[idx].quantity);
+				prevState.movies[idx].used = Math.min(prevState.movies[idx].used + number,10);
+			}else{
+				prevState.movies[idx].used = Math.max(prevState.movies[idx].used + number,0);
+			}
+			prevState.cost = Math.max(0,prevState.cost + number*4);
+			return prevState;
+		});
+	};
 
-    logout = () => {
+	setPrice = () => {
+		let me = this;
+		//console.log("Received values of form: ", values);
+		var user = this.state.username;
+		var password = this.state.password;
+		// Default options are marked with *
+		var data = JSON.stringify({
+
+		});
+		var url = constants.BACKEND_URL+"/price";
+		fetch(url, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json; charset=utf-8"
+			}
+		}).then(res => res.json())
+			 .then(function (res) {
+				 if (res.success === true) {
+					 console.log("Success");
+					 me.setState({prices: res.data});
+					 console.log("Actual prices: ",res.data);
+				 } else {
+					 console.log("The servuce failed: ",res.message);
+				 }
+			 }).catch(error => {
+			me.setState({displayAlert:2});
+			console.log("Error: ", error);
+		} );
+	};
+
+	getMovies = () => {
+		let me = this;
+		//console.log("Received values of form: ", values);
+		var user = this.state.username;
+		var password = this.state.password;
+		// Default options are marked with *
+		var data = JSON.stringify({
+
+		});
+		var url = constants.BACKEND_URL+"/movie";
+		fetch(url, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json; charset=utf-8"
+			}
+		}).then(res => res.json())
+			 .then(function (res) {
+				 if (res.success === true) {
+					 console.log("Success");
+					 let movies = res.data.movies;
+					 me.setState ((prevState) =>{
+						 for(let i=0;i<movies.length;i++){
+							 movies[i].used = 0;
+						 }
+						 prevState.movies = movies;
+						 console.log("New state:",prevState);
+						 return prevState;
+					 });
+				 } else {
+					 console.log("The servuce failed: ",res.message);
+				 }
+			 }).catch(error => {
+			me.setState({displayAlert:2});
+			console.log("Error: ", error);
+		} );
+	};
+
+	makeLoan = () => {
+		let me = this;
+		//console.log("Received values of form: ", values);
+		var user = this.state.username;
+		var password = this.state.password;
+		// Default options are marked with *
+		var data = JSON.stringify({
+			userId: 1,
+			clientId: 1,
+			cost: this.state.cost,
+			nit: "123232332",
+			expirationTime: moment().add(5,"d"),
+			movieQuantities: this.state.movies
+		});
+		var url = constants.BACKEND_URL+"/loan";
+		fetch(url, {
+			method: "POST",
+			body: data,
+			headers: {
+				"Content-Type": "application/json; charset=utf-8"
+			}
+		}).then(res => res.json())
+			 .then(function (res) {
+				 if (res.success === true) {
+					 console.log("Success");
+					 me.setState({modalIsOpen: false})
+				 } else {
+					 console.log("The servuce failed: ",res.message);
+				 }
+			 }).catch(error => {
+			me.setState({displayAlert:2});
+			console.log("Error: ", error);
+		} );
+	};
+
+
+
+	logout = () => {
         deleteCookie("JWT");
         this.props.history.push("/login");
     };
@@ -93,7 +217,7 @@ class AdminLayout extends Component {
                 </Row>
 	            <Row>
 		            <Col span={24}>
-			            <MovieForm complete={false}/>
+			            <MovieForm movies={this.state.movies} updateUsed={this.updateUsed} complete={false}/>
 		            </Col>
 	            </Row>
 
@@ -102,7 +226,7 @@ class AdminLayout extends Component {
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                     <Col className="gutter-row" span={6}></Col>
                     <Col className="gutter-row" span={6}>
-                        <label className="txt2">Costo: 30 Bs</label>
+                        <label className="txt2">Costo: {this.state.cost} Bs</label>
                     </Col>
                     <Col className="gutter-row" span={6}>
                         <label className="txt2">Dias: </label>
@@ -124,7 +248,7 @@ class AdminLayout extends Component {
                     <Button className="button2" type={"danger"} onClick={this.closeNotificationModal}>Cancelar</Button>
                     </Col>
                     <Col className="gutter-row" span={6}>
-                    <Button className="button2" type={"primary"} >Prestar Películas</Button>
+                    <Button className="button2" type={"primary"} onClick={this.makeLoan}>Prestar Películas</Button>
                     </Col>
                     <Col className="gutter-row" span={6}></Col>
                 </Row>
@@ -177,12 +301,12 @@ class AdminLayout extends Component {
                     </Row>
 
                 <br/>
-                <MovieForm complete={true}/>
+                <MovieForm movies={this.state.movies} updateUsed={this.updateUsed} complete={true}/>
                 <br/>
 
                 <Row justify="end">
                     <Col span={4}></Col>
-                    <Col span={4}><label className="txt">Costo: 30 Bs</label></Col>
+                    <Col span={4}><label className="txt">Costo: {this.state.cost} Bs</label></Col>
                     <Col span={4}><label className="txt">Dias: </label>
                         <select id="cantidad" className="txt">
                             <option value="1">1</option>
