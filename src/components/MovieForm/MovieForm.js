@@ -18,49 +18,11 @@ class MovieForm extends Component {
 	};
 
 	componentDidMount() {
-		this.getMovies();
 	}
 
 	styles = {
 		height: this.props.complete ? "320px" : "200px"
 	}
-
-	getMovies = () => {
-		let me = this;
-		//console.log("Received values of form: ", values);
-		var user = this.state.username;
-		var password = this.state.password;
-		// Default options are marked with *
-		var data = JSON.stringify({
-
-		});
-		var url = constants.BACKEND_URL+"/movie";
-		fetch(url, {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json; charset=utf-8"
-			}
-		}).then(res => res.json())
-			 .then(function (res) {
-				 if (res.success === true) {
-					 console.log("Success");
-					 let movies = res.data.movies;
-					 me.setState ((prevState) =>{
-						 for(let i=0;i<movies.length;i++){
-							 movies[i].used = 0;
-						 }
-						 prevState.movies = movies;
-						 console.log("New state:",prevState);
-						 return prevState;
-					 });
-				 } else {
-					 console.log("The servuce failed: ",res.message);
-				 }
-			 }).catch(error => {
-			me.setState({displayAlert:2});
-			console.log("Error: ", error);
-		} );
-	};
 
 	loading = () => {
 		return <div>The component is loading</div>
@@ -82,7 +44,7 @@ class MovieForm extends Component {
 	Duration = (idx) => {
 		return (
 			 <Col span={3}>
-				 {this.state.movies[idx].duration}
+				 {this.props.movies[idx].duration}
 			 </Col>
 		);
 	};
@@ -91,11 +53,11 @@ class MovieForm extends Component {
 			 <Col span={4}>
 				 <Button
 					  type="primary" shape="circle" icon={<PlusCircleOutlined />}
-					  onClick={e => (this.updateUsed(e,idx,1))}
+					  onClick={e => (this.props.updateUsed(e,idx,1))}
 				 />
 				 <Button
 					  type="primary" shape="circle" icon={<MinusCircleOutlined />}
-					  onClick={e => (this.updateUsed(e,idx,-1))}
+					  onClick={e => (this.props.updateUsed(e,idx,-1))}
 				 />
 			 </Col>
 		);
@@ -105,12 +67,12 @@ class MovieForm extends Component {
 		return (
 			 <Row key = {idx} justify="center" align="middle">
 				 <Col span={10}>
-					 {this.state.movies[idx].name}
+					 {this.props.movies[idx].name}
 				 </Col>
 				 {this.props.complete && this.Duration(idx)}
 				 {this.props.complete && this.Buttons(idx)}
 				 <Col span={2}>
-					 {this.state.movies[idx].used}
+					 {this.props.movies[idx].used}
 				 </Col>
 
 			 </Row>
@@ -119,7 +81,7 @@ class MovieForm extends Component {
 
 	formTable = () => {
 		let moviesRows = [];
-		for(let i = 0; i < this.state.movies.length; i++) {
+		for(let i = 0; i < this.props.movies.length; i++) {
 			moviesRows.push(this.movieCtn(i));
 		}
 		return moviesRows;
