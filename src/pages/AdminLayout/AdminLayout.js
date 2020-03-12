@@ -11,7 +11,7 @@ import moment from "moment";
 import {connect} from "react-redux";
 import * as constants from "../../constants";
 import LoadingGif from'../../assets/gif/loading.gif';
-import { Row,Col,Button,Layout, Menu, Breadcrumb, Typography, Select } from 'antd';
+import { Row,Col,Button,Layout, Menu, Breadcrumb, Typography, Select, message } from 'antd';
 const { Header, Content, Footer } = Layout;
 const {Title} = Typography;
 const { Option } = Select;
@@ -191,7 +191,8 @@ class AdminLayout extends Component {
 			 .then(function (res) {
 				 if (res.success === true) {
 					 console.log("Success");
-					 me.setState({modalIsOpen: false})
+					 me.setState({modalIsOpen: false});
+					 message.success("El préstamo se ha realizado correctamen.");
 				 } else {
 					 console.log("The servuce failed: ",res.message);
 				 }
