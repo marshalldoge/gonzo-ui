@@ -294,17 +294,22 @@ class AdminLayout extends Component {
                         defaultSelectedKeys={['2']}
                         style={{ lineHeight: '64px' }}
                     >
-
                         <Row justify="space-around">
-                            <Col span={7}><Menu.Item className="button" key="1">Gestionar clientes</Menu.Item></Col>
-                            <Col span={7}><Menu.Item className="button" key="2">Gestionar préstamos</Menu.Item></Col>
-                            <Col span={7}><Menu.Item className="button" key="3">Gestionar películas</Menu.Item></Col>
+                            <Col  span={8}>
+                            <Menu.Item className="button" key="1">Gestionar clientes</Menu.Item>
+                            </Col>
+                            <Col  span={8}>
+                            <Menu.Item className="button" key="2">Gestionar préstamos</Menu.Item>
+                            </Col>
+                            <Col  span={8}>
+                            <Menu.Item className="button" key="3">Gestionar películas</Menu.Item>
+                            </Col>
                         </Row>
 
                     </Menu>
 
                 </Header>
-
+                <br/>
                 <br/>
                 <Content style={{ padding: '0 50px' }}>
                     <div className="site-layout-content">
@@ -332,13 +337,13 @@ class AdminLayout extends Component {
                     <Col span={4}><label className="txt">Dias: </label>
 	                    {this.DiasSelect()}
                     </Col>
-                    <Col span={10}><input className="button3" onClick={this.openNotificationModal} type="submit" value="Realizar préstamo" /></Col>
+                    <Col span={4}><input className="button3" onClick={this.openNotificationModal} type="submit" value="Realizar préstamo" /></Col>
                 </Row>
 
             </div>
 
             <br/>
-            <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
+            <Footer className="foot">Gonzo Design ©2020 Created by GonzoTeam</Footer>
             {this.NotificationModal()}
 
             </Content>
