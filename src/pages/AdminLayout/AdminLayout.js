@@ -251,15 +251,15 @@ class AdminLayout extends Component {
                 <br/>
 
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-                    <Col className="gutter-row" span={6}></Col>
-                    <Col className="gutter-row" span={6}>
+                    <Col className="gutter-row" span={5}></Col>
+                    <Col className="gutter-row" span={7}>
                         <label className="txt2">Costo: {this.state.cost} Bs</label>
                     </Col>
-                    <Col className="gutter-row" span={6}>
+                    <Col className="gutter-row" span={7}>
                         <label className="txt2">Dias: </label>
 	                    {this.DiasSelect()}
                     </Col>
-                    <Col className="gutter-row" span={6}></Col>
+                    <Col className="gutter-row" span={5}></Col>
                 </Row>
 
                 <br/>
@@ -326,10 +326,13 @@ class AdminLayout extends Component {
                         <Col span={4}><input className="button2" type="submit" value="buscar" /></Col>
                         <Col span={4}></Col>
                     </Row>
-
-                <br/>
-                <MovieForm movies={this.state.movies} updateUsed={this.updateUsed} complete={true}/>
-                <br/>
+                    <br/>
+                    <Row>
+                        <Col span={24} >
+                        <MovieForm movies={this.state.movies} updateUsed={this.updateUsed} complete={true}/>
+                        </Col>
+                    </Row>
+                    <br/>
 
                 <Row justify="end">
                     <Col span={4}></Col>

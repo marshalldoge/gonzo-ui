@@ -22,6 +22,8 @@ class MovieForm extends Component {
 
 	styles = {
 		height: this.props.complete ? "320px" : "200px"
+	
+		 
 	}
 
 	loading = () => {
@@ -52,11 +54,11 @@ class MovieForm extends Component {
 		return (
 			 <Col span={4}>
 				 <Button
-					  type="primary" shape="circle" icon={<PlusCircleOutlined />}
+					  type="primary" className="button4" shape="circle" icon={<PlusCircleOutlined />}
 					  onClick={e => (this.props.updateUsed(e,idx,1))}
 				 />
 				 <Button
-					  type="primary" shape="circle" icon={<MinusCircleOutlined />}
+					  type="primary" className="button4" shape="circle" icon={<MinusCircleOutlined />}
 					  onClick={e => (this.props.updateUsed(e,idx,-1))}
 				 />
 			 </Col>
@@ -89,7 +91,7 @@ class MovieForm extends Component {
 
 	render() {
 		return (
-			 <Row className={"FormCtn"} style={this.styles}>
+			 <Row className={"FormCtn"} style={this._Movie}>
 				 <Col span={24}>
 					 {this.formTable()}
 				 </Col>
