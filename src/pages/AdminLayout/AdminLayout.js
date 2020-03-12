@@ -37,7 +37,8 @@ class AdminLayout extends Component {
 	    cost: 0,
 	    nit: "",
 	    prices: [],
-	    days: 1
+	    days: 1,
+	    daysPrice: 0
     };
 
     componentDidMount = () => {
@@ -48,7 +49,6 @@ class AdminLayout extends Component {
 	updateUsed(e,idx,number){
 		let me = this;
 		me.setState ((prevState) =>{
-			console.log("prevstate: ",prevState.movies);
 			let newValue;
 			if(number > 0){
 				newValue = Math.min(prevState.movies[idx].used + number,prevState.movies[idx].quantity);
@@ -58,7 +58,39 @@ class AdminLayout extends Component {
 				newValue = Math.max(prevState.movies[idx].used + number,0);
 				prevState.movies[idx].used = newValue;
 			}
-			prevState.cost = Math.max(0,prevState.cost + newValue);
+
+			let sum = 0;
+			for(let i = 0; i < prevState.movies.length; i++) {
+				sum += prevState.movies[i].used;
+			}
+			console.log("Total sum: ",sum, " and actualDayPrice: ",prevState.daysPrice);
+			prevState.cost = sum * prevState.daysPrice;
+			console.log("Updated ",prevState.movies[idx]," and cost eleveated with ",newValue);
+			console.log("Prevstate after updating movie used: ",prevState);
+			return prevState;
+		});
+	};
+
+	updateDays = (value) => {
+		let me = this;
+		me.setState ((prevState) =>{
+			//Select the cost for the day selected
+			let newDaysPrice = 0;
+			console.log("Type of value udpated ",typeof value," ",value);
+			for(let i = 0; i < prevState.prices.length; i++) {
+				if(prevState.prices[i].day === value) {
+					newDaysPrice = prevState.prices[i].price;
+				}
+			}
+			console.log("New days price is ",newDaysPrice);
+
+			let sum = 0;
+			for(let i = 0; i < prevState.movies.length; i++) {
+				sum += prevState.movies[i].used;
+			}
+			prevState.cost = sum * newDaysPrice;
+			prevState.days = value;
+			prevState.daysPrice = newDaysPrice;
 			return prevState;
 		});
 	};
@@ -82,7 +114,11 @@ class AdminLayout extends Component {
 			 .then(function (res) {
 				 if (res.success === true) {
 					 console.log("Success");
-					 me.setState({prices: res.data});
+					 me.setState({
+						 prices: res.data,
+						 days: res.data[0].day,
+						 daysPrice: res.data[0].price
+					 });
 					 console.log("Actual prices: ",res.data);
 				 } else {
 					 console.log("The servuce failed: ",res.message);
@@ -188,11 +224,6 @@ class AdminLayout extends Component {
         this.setState({modalIsOpen: false});
     };
 
-	changeDays = (value) => {
-		console.log("Value clicekd: ",value);
-		this.setState({days: value});
-	};
-
 	DiasSelect = () => {
 		/*
 		<select id="cantidad" className="txt2">
@@ -204,7 +235,7 @@ class AdminLayout extends Component {
 		 */
 		let options = this.state.prices.map(x => <Option key={x.id} value={x.day}>{x.day}</Option>);
 		return (
-			<Select id="cantidad" className="txt2" onChange={this.changeDays} defaultValue={this.state.days}>
+			<Select id="cantidad" className="txt2" onChange={this.updateDays} defaultValue={this.state.days}>
 				{options}
 			</Select>
 		);
@@ -251,15 +282,15 @@ class AdminLayout extends Component {
                 <br/>
 
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-                    <Col className="gutter-row" span={5}></Col>
-                    <Col className="gutter-row" span={7}>
+                    <Col className="gutter-row" span={6}></Col>
+                    <Col className="gutter-row" span={6}>
                         <label className="txt2">Costo: {this.state.cost} Bs</label>
                     </Col>
-                    <Col className="gutter-row" span={7}>
+                    <Col className="gutter-row" span={6}>
                         <label className="txt2">Dias: </label>
 	                    {this.DiasSelect()}
                     </Col>
-                    <Col className="gutter-row" span={5}></Col>
+                    <Col className="gutter-row" span={6}></Col>
                 </Row>
 
                 <br/>
@@ -326,13 +357,10 @@ class AdminLayout extends Component {
                         <Col span={4}><input className="button2" type="submit" value="buscar" /></Col>
                         <Col span={4}></Col>
                     </Row>
-                    <br/>
-                    <Row>
-                        <Col span={24} >
-                        <MovieForm movies={this.state.movies} updateUsed={this.updateUsed} complete={true}/>
-                        </Col>
-                    </Row>
-                    <br/>
+
+                <br/>
+                <MovieForm movies={this.state.movies} updateUsed={this.updateUsed} complete={true}/>
+                <br/>
 
                 <Row justify="end">
                     <Col span={4}></Col>
