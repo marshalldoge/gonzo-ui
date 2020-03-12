@@ -91,6 +91,7 @@ class MovieForm extends Component {
 
 	render() {
 		return (
+
 			 <Row className={"FormCtn"} style={this._Movie}>
 				 <Col span={24}>
 					 {this.formTable()}
