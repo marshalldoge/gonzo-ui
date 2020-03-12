@@ -11,9 +11,10 @@ import moment from "moment";
 import {connect} from "react-redux";
 import * as constants from "../../constants";
 import LoadingGif from'../../assets/gif/loading.gif';
-import { Row,Col,Button,Layout, Menu, Breadcrumb, Typography } from 'antd';
+import { Row,Col,Button,Layout, Menu, Breadcrumb, Typography, Select } from 'antd';
 const { Header, Content, Footer } = Layout;
 const {Title} = Typography;
+const { Option } = Select;
 
 const MovieForm = React.lazy(() => import("../../components/MovieForm/MovieForm"));
 
@@ -35,7 +36,8 @@ class AdminLayout extends Component {
 	    movies:[],
 	    cost: 0,
 	    nit: "",
-	    prices: []
+	    prices: [],
+	    days: 1
     };
 
     componentDidMount = () => {
@@ -47,13 +49,16 @@ class AdminLayout extends Component {
 		let me = this;
 		me.setState ((prevState) =>{
 			console.log("prevstate: ",prevState.movies);
+			let newValue;
 			if(number > 0){
-				//prevState.movies[idx].used = Math.min(prevState.movies[idx].used + number,prevState.movies[idx].quantity);
-				prevState.movies[idx].used = Math.min(prevState.movies[idx].used + number,10);
+				newValue = Math.min(prevState.movies[idx].used + number,prevState.movies[idx].quantity);
+				prevState.movies[idx].used = newValue;
+				// prevState.movies[idx].used = Math.min(prevState.movies[idx].used + number,prevState.movies);
 			}else{
-				prevState.movies[idx].used = Math.max(prevState.movies[idx].used + number,0);
+				newValue = Math.max(prevState.movies[idx].used + number,0);
+				prevState.movies[idx].used = newValue;
 			}
-			prevState.cost = Math.max(0,prevState.cost + number*4);
+			prevState.cost = Math.max(0,prevState.cost + newValue);
 			return prevState;
 		});
 	};
@@ -183,6 +188,28 @@ class AdminLayout extends Component {
         this.setState({modalIsOpen: false});
     };
 
+	changeDays = (value) => {
+		console.log("Value clicekd: ",value);
+		this.setState({days: value});
+	};
+
+	DiasSelect = () => {
+		/*
+		<select id="cantidad" className="txt2">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select>
+		 */
+		let options = this.state.prices.map(x => <Option key={x.id} value={x.day}>{x.day}</Option>);
+		return (
+			<Select id="cantidad" className="txt2" onChange={this.changeDays} defaultValue={this.state.days}>
+				{options}
+			</Select>
+		);
+	};
+
     NotificationModal = () => {
         let me = this;
         function afterOpenModal() {
@@ -230,12 +257,7 @@ class AdminLayout extends Component {
                     </Col>
                     <Col className="gutter-row" span={6}>
                         <label className="txt2">Dias: </label>
-                        <select id="cantidad" className="txt2">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                        </select>
+	                    {this.DiasSelect()}
                     </Col>
                     <Col className="gutter-row" span={6}></Col>
                 </Row>
@@ -308,12 +330,7 @@ class AdminLayout extends Component {
                     <Col span={4}></Col>
                     <Col span={4}><label className="txt">Costo: {this.state.cost} Bs</label></Col>
                     <Col span={4}><label className="txt">Dias: </label>
-                        <select id="cantidad" className="txt">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                        </select>
+	                    {this.DiasSelect()}
                     </Col>
                     <Col span={10}><input className="button3" onClick={this.openNotificationModal} type="submit" value="Realizar préstamo" /></Col>
                 </Row>
