@@ -11,7 +11,7 @@ import moment from "moment";
 import {connect} from "react-redux";
 import * as constants from "../../constants";
 import LoadingGif from'../../assets/gif/loading.gif';
-import { Row,Col,Button,Layout, Menu, Breadcrumb, Typography, Select, message } from 'antd';
+import { Row,Col,Button,Layout, Menu, Breadcrumb, Typography, Select, message, List } from 'antd';
 const { Header, Content, Footer } = Layout;
 const {Title} = Typography;
 const { Option } = Select;
@@ -33,12 +33,15 @@ class AdminLayout extends Component {
         servicesToLoad: 2,
         loadedServices: 0,
         modalIsOpen:false,
+	    confirmationIsOpen: false,
+	    videos: [],
 	    movies:[],
 	    cost: 0,
 	    nit: "",
 	    prices: [],
 	    days: 1,
-	    daysPrice: 0
+	    daysPrice: 0,
+	    filter: ""
     };
 
     componentDidMount = () => {
@@ -177,6 +180,7 @@ class AdminLayout extends Component {
 			clientId: 1,
 			cost: this.state.cost,
 			nit: "123232332",
+			days: this.state.days,
 			expirationTime: moment().add(5,"d"),
 			movieQuantities: this.state.movies
 		});
@@ -191,7 +195,13 @@ class AdminLayout extends Component {
 			 .then(function (res) {
 				 if (res.success === true) {
 					 console.log("Success");
-					 me.setState({modalIsOpen: false});
+					 me.setState ((prevState) =>{
+						 prevState.modalIsOpen = false;
+						 prevState.videos = res.data.videos;
+						 prevState.confirmationIsOpen = true;
+						 return prevState;
+					 });
+					 me.getMovies();
 					 message.success("El préstamo se ha realizado correctamen.");
 				 } else {
 					 console.log("The servuce failed: ",res.message);
@@ -224,6 +234,15 @@ class AdminLayout extends Component {
     closeNotificationModal = () => {
         this.setState({modalIsOpen: false});
     };
+
+	closeConfirmationModal = () => {
+		this.setState({confirmationIsOpen: false});
+	};
+
+	setFilter = (e) => {
+		console.log("filter value: ",e.target.value);
+		this.setState({filter: e.target.value});
+	};
 
 	DiasSelect = () => {
 		/*
@@ -276,7 +295,10 @@ class AdminLayout extends Component {
                 </Row>
 	            <Row>
 		            <Col span={24}>
-			            <MovieForm movies={this.state.movies} updateUsed={this.updateUsed} complete={false}/>
+			            <MovieForm
+				             movies={this.state.movies} updateUsed={this.updateUsed} complete={false}
+				             filter={this.state.filter}
+			            />
 		            </Col>
 	            </Row>
 
@@ -310,6 +332,62 @@ class AdminLayout extends Component {
             </Modal>
         );
     };
+
+	ConfirmationNotification = () => {
+		let me = this;
+		function afterOpenModal() {
+			// references are now sync'd and can be accessed.
+			console.log("AFTER MODAL IS OPEN");
+		}
+
+		const customStyles = {
+			content : {
+				top                   : '50%',
+				left                  : '50%',
+				right                 : 'auto',
+				bottom                : 'auto',
+				marginRight           : '-50%',
+				transform             : 'translate(-50%, -50%)',
+				width                 : '500px'
+			}
+		};
+		return (
+			 <Modal
+				  isOpen={this.state.confirmationIsOpen}
+				  onRequestClose={this.closeConfirmationModal}
+				  style={customStyles}
+				  contentLabel="Confirmation"
+				  ariaHideApp={false}
+			 >
+				 <Row>
+					 <Col span={24}>
+						 <List
+							  header={<div>Videos a prestar</div>}
+							  bordered
+							  dataSource={this.state.videos}
+							  renderItem={item => (
+								   <List.Item>
+									   <Typography.Text mark>{item.id}</Typography.Text> {item.movieName}
+								   </List.Item>
+							  )}
+						 />
+					 </Col>
+				 </Row>
+
+				 <br/>
+
+				 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+					 <Col className="gutter-row" span={8}></Col>
+					 <Col className="gutter-row" span={8}>
+						 <Button className="button2" type={"danger"} onClick={this.closeConfirmationModal}>Aceptar</Button>
+					 </Col>
+					 <Col className="gutter-row" span={8}></Col>
+				 </Row>
+
+
+			 </Modal>
+		);
+	};
 
     render() {
         //console.log("LOADING: ",this.state.loadedServices);
@@ -347,20 +425,16 @@ class AdminLayout extends Component {
                     <div className="site-layout-content">
 
                     <Row justify="start">
-                        <Col span={3}>
-                            <select id="categorias" className="txt">
-                                <option value="comedia">comedia</option>
-                                <option value="terror">terror</option>
-                                <option value="drama">drama</option>
-                            </select>
-                        </Col>
-                        <Col span={7}>   <input type="text" name="name" className="txt"/></Col>
+	                    <Col span={8}></Col>
+                        <Col span={8}><input type="text" name="name" className="txt" onChange={this.setFilter}/></Col>
                         <Col span={4}><input className="button2" type="submit" value="buscar" /></Col>
                         <Col span={4}></Col>
                     </Row>
 
                 <br/>
-                <MovieForm movies={this.state.movies} updateUsed={this.updateUsed} complete={true}/>
+                <MovieForm movies={this.state.movies} updateUsed={this.updateUsed} complete={true}
+                           filter={this.state.filter}
+                />
                 <br/>
 
                 <Row justify="end">
@@ -377,7 +451,7 @@ class AdminLayout extends Component {
             <br/>
             <Footer className="foot">Gonzo Design ©2020 Created by GonzoTeam</Footer>
             {this.NotificationModal()}
-
+            {this.ConfirmationNotification()}
             </Content>
 
         </Layout>

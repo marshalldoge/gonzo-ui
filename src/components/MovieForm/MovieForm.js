@@ -22,9 +22,50 @@ class MovieForm extends Component {
 
 	styles = {
 		height: this.props.complete ? "320px" : "200px"
-	
-		 
-	}
+
+
+	};
+
+	similarity = (s1, s2) => {
+		var longer = s1;
+		var shorter = s2;
+		if (s1.length < s2.length) {
+			longer = s2;
+			shorter = s1;
+		}
+		var longerLength = longer.length;
+		if (longerLength == 0) {
+			return 1.0;
+		}
+		return (longerLength - this.editDistance(longer, shorter)) / parseFloat(longerLength);
+	};
+
+	editDistance = (s1, s2) => {
+		s1 = s1.toLowerCase();
+		s2 = s2.toLowerCase();
+
+		var costs = new Array();
+		for (var i = 0; i <= s1.length; i++) {
+			var lastValue = i;
+			for (var j = 0; j <= s2.length; j++) {
+				if (i === 0)
+					costs[j] = j;
+				else {
+					if (j > 0) {
+						var newValue = costs[j - 1];
+						if (s1.charAt(i - 1) != s2.charAt(j - 1))
+							newValue = Math.min(Math.min(newValue, lastValue),
+								 costs[j]) + 1;
+						costs[j - 1] = lastValue;
+						lastValue = newValue;
+					}
+				}
+			}
+			if (i > 0)
+				costs[s2.length] = lastValue;
+		}
+		return costs[s2.length];
+	};
 
 	loading = () => {
 		return <div>The component is loading</div>
@@ -65,9 +106,15 @@ class MovieForm extends Component {
 		);
 	};
 
-	movieCtn = (idx) => {
+	rowStyle = (avalaible) => {
+		return {
+			backgroundColor: avalaible ? "white" : "#e50914"
+		}
+	};
+
+	movieCtn = (idx, avalaible) => {
 		return (
-			 <Row key = {idx} justify="center" align="middle">
+			 <Row key = {idx} justify="center" align="middle" style={this.rowStyle(avalaible)}>
 				 <Col span={10}>
 					 {this.props.movies[idx].name}
 				 </Col>
@@ -81,10 +128,38 @@ class MovieForm extends Component {
 		);
 	};
 
+	optionalHeader = () => {
+		return (
+			 <Col span={7}>
+				 {""}
+			 </Col>
+		);
+	};
+
 	formTable = () => {
 		let moviesRows = [];
+		moviesRows.push(
+			 <Row key = {9999999} justify="center" align="middle">
+				 <Col span={10}>
+					 {"Nombre(Duración)"}
+				 </Col>
+				 {this.props.complete && this.optionalHeader()}
+				 <Col span={4}>
+					 {"Agregados"}
+				 </Col>
+
+			 </Row>
+		);
+
 		for(let i = 0; i < this.props.movies.length; i++) {
-			moviesRows.push(this.movieCtn(i));
+			if(this.similarity(this.props.filter.toUpperCase(),this.props.movies[i].name.toUpperCase()) >= 0.2|| this.props.filter === "") {
+				console.log("Filter: ",this.props.filter," vs ",this.props.movies[i].name, " wiht sim: ",this.similarity(this.props.filter,this.props.movies[i].name));
+				if(this.props.movies[i].quantity > 0){
+					moviesRows.push(this.movieCtn(i,true));
+				}else{
+					moviesRows.push(this.movieCtn(i,false));
+				}
+			}
 		}
 		return moviesRows;
 	};
