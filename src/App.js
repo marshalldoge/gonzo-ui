@@ -5,19 +5,21 @@ import {
 	Switch,
 	Redirect
 } from 'react-router-dom';
-import {getCookie } from "./utils";
+import {getCookie, parseJwt, isTokenValid } from "./utils";
 import './App.scss';
 import { Provider } from "react-redux";
 import store from "./redux/store";
+import moment from "moment";
 
 const AdminLayout = React.lazy(() => import('./pages/AdminLayout/AdminLayout'));
 const Login = React.lazy(() => import('./pages/Login/Login'));
 
 const loading = () => <div>Loading...</div>;
 const Authenticate= ()=>{
-	return true;
+	//return true;
+
 	console.log("Authenticando...");
-	if(getCookie("JWT") !== undefined){
+	if(isTokenValid('authJWT')){
 		console.log("Usuario authenticado :)");
 		return true;
 	}else{
@@ -43,8 +45,8 @@ function App() {
 				 <HashRouter>
 					 <React.Suspense fallback={loading()}>
 						 <Switch>
-							 <Route exact path='/Login' component={Login} render={props => <Login {...props}/>}></Route>
-							 <PrivateRoute exact path='/AdminLayout' component={AdminLayout} ></PrivateRoute>
+							 <Route exact path='/login' component={Login} render={props => <Login {...props}/>}></Route>
+							 <PrivateRoute exact path='/adminLayout' component={AdminLayout} ></PrivateRoute>
 							 <PrivateRoute path='/' component={AdminLayout}></PrivateRoute>
 						 </Switch>
 					 </React.Suspense>

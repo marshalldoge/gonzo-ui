@@ -7,11 +7,13 @@ const Carousels = React.lazy(() => import('./views/Base/Carousels'));
 
 //NEWS
 const Dashboard = React.lazy(()=>import('./views/Dashboard/Dashboard'));
+const Login = React.lazy(()=>import('./pages/Login/Login'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
     { path: '/', exact: true, name: 'Home' },
-    { path: '/Dashboard', name: 'Dashboard', component: Dashboard },
+    { path: '/dashboard', name: 'dashboard', component: Dashboard },
+	{ path: '/login', name: 'login', component: Login },
     /*
         { path: '/theme', exact: true, name: 'Theme', component: Colors },
     */

@@ -1,4 +1,5 @@
 import moment from "moment";
+
 //--------------------------------COOKIES---------------------------------------
 export function setCookie(cname, cvalue, exdays) {
     var d = new Date();
@@ -39,6 +40,24 @@ export function deleteCookie(cname) {
     //console.log("Expires now in: ",expires);
     window.document.cookie = cname+"=; "+expires;//Set the cookie with name and the expiration date
 }
+export function isTokenValid(tokenName) {
+	if(localStorage.getItem(tokenName) !== null) {
+		let jwt = parseJwt(localStorage.getItem(tokenName));
+		return moment().unix() <= jwt.exp;
+	}else {
+		return false;
+	}
+}
+export function tokenTimeLeft(tokenName) {
+	if(localStorage.getItem(tokenName) !== null) {
+		let jwt = parseJwt(localStorage.getItem(tokenName));
+		let now = moment();
+		return jwt.exp - now.unix();
+	}else {
+		return 0;
+	}
+}
+
 //--------------------------------END COOKIES---------------------------------------
 
 export function getJWtProperty(propertyName) {

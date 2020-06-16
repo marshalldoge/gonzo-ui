@@ -1,82 +1,22 @@
-
-
-.site-layout-content {
-  background: #eeeeee;
-  padding: 24px;
-  min-height: 280px;
-  border-radius: 10px;
+.ant-layout-header {
+  background-color: #f4f4f4;
+  min-height: 80px;
 }
-#components-layout-demo-top .logo {
+
+.logo {
   width: 120px;
-  height: 31px;
-  background: rgba(255, 255, 255, 0.2);
-  margin: 16px 24px 16px 0;
+  height: 80px;
   float: left;
 }
-.layout {
-  background-color: #000000;
-  padding: 12px;
-  height: 100%;
-  min-height: 100vh;
-  color: #eeeeee;
-}
-.header-container-wrapper {
-  background-color: #000000;
-}
-.nav {
-  background-color: #eeeeee;
-  border-radius: 10px;
-  
-}
-.button {
-  padding-top: 5px;
-  padding-bottom: 5px;
-  background-color: #e50914;
-  color: white;
-  font-size: 20px;
-  font-family: "Comic Sans MS", cursive, sans-serif;
-  border-radius: 10px;
-  font-size: large;
-  border: 2px solid black;
-}
-.button2 {
-  background-color: #e50914;
-  color: white;
-  border-radius: 10px;
-  font-family: "Comic Sans MS", cursive, sans-serif;
-  font-size: large;
-  border: 2px solid black;
+.site-layout {
+  padding-top: 80px;
 }
 
-.button3 {
-  background-color: #e50914;
-  color: white;
-  border-radius: 10px;
-  float: right;
-  font-family: "Comic Sans MS", cursive, sans-serif;
-  font-size: large;
-  border: 2px solid black;
+.site-layout-background {
+  background: #fff;
+  padding: 24px;
+  min-height: 75vh;
 }
-
-.txt {
-  font-family: "Comic Sans MS", cursive, sans-serif;
-  font-size: large;
-  font-weight: bold;
-  border-radius: 10px;
-  color: black;
-}
-
-.txt2 {
-  font-family: "Comic Sans MS", cursive, sans-serif;
-  font-size: medium;
-  font-weight: bold;
-  border-radius: 10px;
-}
-
-.foot{
-  font-family: "Comic Sans MS", cursive, sans-serif;
-  text-Align: center;
-  background-color: #eeeeee;
-  border-radius: 10px;
-
+.card {
+  cursor: pointer;
 }

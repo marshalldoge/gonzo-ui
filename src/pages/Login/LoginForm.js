@@ -29,30 +29,39 @@ class LoginForm extends Component {
         var user = this.state.username;
         var password = this.state.password;
         // Default options are marked with *
+	    if(user.trim() === "" || password.trim() === ""){
+	    	this.setState({displayAlert: 2})
+		    return;
+	    }
         var data = JSON.stringify({
             username: user,
             password: password
         });
-        var url = constants.BACKEND_URL+"/AppUser/login";
+        var url = constants.BACKEND_URL+"/api/v1/security/login";
         fetch(url, {
             method: "POST",
             body: data,
             headers: {
                 "Content-Type": "application/json; charset=utf-8"
             }
-        }).then(res => res.json())
-	         .then(function (res) {
-            if (res.success === true) {
+        }).then(response => {
+	        const status = response['status'];
+	        //console.log("Response: ",response, " status: ",status," - ",typeof status);
+	        if(status === 200){
+				return response.json();
+	        } else {
+		        throw new Error('Something went wrong');
+	        }
+        }).then(res => {
                 console.log("Success");
-	            const {from} = me.props.location.state || {from: {pathname: "/"}};
+	            localStorage.setItem('authJWT', res.authentication);
+	            localStorage.setItem('refreshJWT', res.refresh);
+	            const {from} = me.props.location.state || {from: {pathname: "/dashboard"}};
 	            me.props.history.push(from);
-            } else {
-                me.setState({displayAlert:1});
-            }
         }).catch(error => {
-            me.setState({displayAlert:2});
-            console.log("Error: ", error);
-        } );
+        	console.log("Hubo el error: ",error);
+	        me.setState({displayAlert:1});
+        });
     };
 
     UsernameInput = () => {
@@ -96,11 +105,12 @@ class LoginForm extends Component {
         this.props.history.push("/");
     }
 
-    alert = () => {
+    Alert = () => {
         if(this.state.displayAlert === 0)return null;
         let message;
         if(this.state.displayAlert === 1)message = "Usuario o Contraseña inválidos.";
-        if(this.state.displayAlert === 2)message = "Hubo un problema de conexion. Verifique que esta conectado a internet.";
+	    if(this.state.displayAlert === 2)message = "Ha dejado vacío algunos de los campos.";
+        if(this.state.displayAlert === 3)message = "Hubo un problema de conexion. Verifique que esta conectado a internet.";
         return(
             <Form.Item>
                 <Alert style={{
@@ -130,6 +140,8 @@ class LoginForm extends Component {
                     <Row type={"flex"} justify={"center"}>
                         {this.LoginButton()}
                     </Row>
+	                <br/>
+	                {this.Alert()}
                 </Col>
             </Row>
         );
