@@ -57,6 +57,14 @@ export function tokenTimeLeft(tokenName) {
 		return 0;
 	}
 }
+export function getRoles(tokenName) {
+	if(localStorage.getItem(tokenName) !== null) {
+		let jwt = parseJwt(localStorage.getItem(tokenName));
+		return jwt['features'];
+	}else {
+		return [];
+	}
+}
 
 //--------------------------------END COOKIES---------------------------------------
 

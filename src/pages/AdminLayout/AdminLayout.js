@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import Modal from 'react-modal';
 import "antd/dist/antd.css";
 import "./_adminLayout.scss";
-import {deleteCookie, getCookie, getJWtProperty, withParams,isTokenValid, tokenTimeLeft} from "../../utils";
+import {deleteCookie, getCookie, getJWtProperty, withParams,isTokenValid, tokenTimeLeft, getRoles} from "../../utils";
 import {setIdAppUser,setAppUser,setModules,setClientData,setNitIdClientHashMap,
     setClientBillNameArray,setClientNitArray,setNitClientHashMap,setItemQuantityHashMap,
     setItemQuantityCode, setWarehouse, setShift, setCompany, setCurrency, setMeasure} from "../../redux/actions";
@@ -31,11 +31,14 @@ class AdminLayout extends Component {
 
     state = {
         collapsed: false,
-	    display: "HOME"
+	    display: "HOME",
+	    rolesArray: [],
+	    rolesMap: {}
     };
 
 	refreshJWT = () => {
 		let me = this;
+		console.log("Regresing!");
 		var data = JSON.stringify({
 			refreshToken: localStorage.getItem('refreshJWT')
 		});
@@ -55,18 +58,53 @@ class AdminLayout extends Component {
 				throw new Error('Something went wrong');
 			}
 		}).then(res => {
-			console.log("Success");
+			console.log("Success Refreshing");
 			localStorage.setItem('authJWT', res.authentication);
 			localStorage.setItem('refreshJWT', res.refresh);
+			me.setRoles();
 		}).catch(error => {
 			console.log("Hubo el error: ",error);
 		});
 	};
 
+	refreshJWTWithDisplayValidation = (display) => {
+		let me = this;
+		console.log("Regresing!");
+		var data = JSON.stringify({
+			refreshToken: localStorage.getItem('refreshJWT')
+		});
+		var url = constants.BACKEND_URL+"/api/v1/security/refresh";
+		fetch(url, {
+			method: "POST",
+			body: data,
+			headers: {
+				"Content-Type": "application/json; charset=utf-8"
+			}
+		}).then(response => {
+			const status = response['status'];
+			//console.log("Response: ",response, " status: ",status," - ",typeof status);
+			if(status === 200){
+				return response.json();
+			} else {
+				throw new Error('Something went wrong');
+			}
+		}).then(res => {
+			console.log("Success Refreshing for New dISPLAY");
+			localStorage.setItem('authJWT', res.authentication);
+			localStorage.setItem('refreshJWT', res.refresh);
+			me.setRolesForNewDisplay(display);
+		}).catch(error => {
+			console.log("Hubo el error: ",error);
+		});
+	};
+
+
+
 	canMakeRequest = (fnc) => {
 		console.log("Evaluating JWT state!");
 		if(isTokenValid('authJWT')) {
-			let message = "Token is still valid with " + tokenTimeLeft('authJWT') + " seconds left";
+			let message = "Auth Token is still valid with " + tokenTimeLeft('authJWT') + " s. left" + "\n" +
+				 "Refresh Token is still valid with " + tokenTimeLeft('refreshJWT') + " s. left";
 			alert(message);
 			fnc();
 			return true;
@@ -83,8 +121,36 @@ class AdminLayout extends Component {
 		}
 	};
 
-    componentDidMount = () => {
+	setRolesForNewDisplay(display) {
+		let roles = getRoles('authJWT');
+		let rolesMap = {};
+		for(let i = 0; i < roles.length; i++) {
+			rolesMap[roles[i]] = true;
+		}
+		this.setState({
+			rolesMap: rolesMap,
+			rolesArray: roles,
+			display: display
+		});
+		console.log("RolesWithDisplay: ",rolesMap);
+	}
 
+
+	setRoles() {
+		let roles = getRoles('authJWT');
+		let rolesMap = {};
+		for(let i = 0; i < roles.length; i++) {
+			rolesMap[roles[i]] = true;
+		}
+		this.setState({
+			rolesMap: rolesMap,
+			rolesArray: roles
+		});
+		console.log("RolesMap: ",rolesMap);
+	}
+
+    componentDidMount = () => {
+	    this.refreshJWT();
     };
 
     logout = () => {
@@ -104,6 +170,7 @@ class AdminLayout extends Component {
 	};
 
 	setHomeBody = newDisplay => {
+		this.refreshJWT();
 		this.setState({
 			display: newDisplay
 		})
@@ -111,27 +178,47 @@ class AdminLayout extends Component {
 
 	Body = () => {
 		switch(this.state.display) {
-			case "USER":
-				return (
-					 <UserTable canMakeRequest={this.canMakeRequest} setHomeBody={this.setHomeBody}/>
-				);
+			case "USER_TABLE":
+				console.log("Rendering user_table");
+				if(this.state.rolesMap['PAGE_USER_MANAGEMENT']) {
+					return (
+						 <UserTable canMakeRequest={this.canMakeRequest} setHomeBody={this.setHomeBody}
+						            rolesMap={this.state.rolesMap}/>
+					);
+				} else {
+					this.setHomeBody('HOME');
+					return null;
+				}
 			default:
 				const gridStyle = {
 					width: '33%',
 					textAlign: 'center',
 					height: '100px'
 				};
-				return (
-					 <Card>
-						 <Card.Grid className="card" style={gridStyle} onClick={() => this.setState({display: "USER"})}>
+				let cards = [];
+				//console.log("Roles available: ",roles," ? ");
+				if(this.state.rolesMap['PAGE_USER_MANAGEMENT']){
+					cards.push(
+						 <Card.Grid key={"PAGE_USER_MANAGEMENT"} className="card" style={gridStyle} onClick={() => this.refreshJWTWithDisplayValidation("USER_TABLE")}>
 							 Gestionar Usuarios
 						 </Card.Grid>
-						 <Card.Grid className="card" style={gridStyle}>
+					);
+				}
+				if(this.state.rolesMap['PAGE_PRODUCT_MANAGEMENT']){
+					cards.push(
+						 <Card.Grid key={"PAGE_PRODUCT_MANAGEMENT"} className="card" style={gridStyle}>
 							 Gestionar Productos
 						 </Card.Grid>
-						 <Card.Grid className="card" style={gridStyle} onClick={this.logout}>
-							 Salir
-						 </Card.Grid>
+					);
+				}
+				cards.push(
+					 <Card.Grid key={"EXIT"} className="card" style={gridStyle} onClick={this.logout}>
+						 Salir
+					 </Card.Grid>
+				);
+				return (
+					 <Card>
+						 {cards}
 					 </Card>
 				)
 

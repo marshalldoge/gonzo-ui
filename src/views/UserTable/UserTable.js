@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import { Row, Col, Button, Table } from "antd";
+import {Row, Col, Button, Table, Card} from "antd";
+import {EditOutlined, DeleteOutlined} from '@ant-design/icons';
 import "./_UserTable.scss";
 import Logo from'../../assets/logos/piratebayLogo.png';
 import * as constants from "../../constants";
+
+const { Column, ColumnGroup } = Table;
 
 
 class UserTable extends Component {
@@ -11,6 +14,9 @@ class UserTable extends Component {
 	constructor(props) {
 		//console.log("PROPS comming in ADMINLAYOUT: ",props);
 		super(props);
+		if(!props.rolesMap['PAGE_USER_MANAGEMENT']){
+			props.setHomeBody('HOME');
+		}
 		this.getUserData = this.getUserData.bind(this);
 	}
 
@@ -80,19 +86,48 @@ class UserTable extends Component {
 		this.getUserData();
 	}
 
+	actionsColumn = () => {
+
+		let buttons = [];
+		buttons.push(
+			 <Button key={"BUTTON_EDIT_USER"} type="dashed" icon={<EditOutlined />} size={'small'} />
+		);
+		if(this.props.rolesMap['BUTTON_DELETE_USER']){
+			buttons.push(
+				 <Button key={"BUTTON_DELETE_USER"}  type="danger" icon={<DeleteOutlined />} size={'small'} />
+			);
+		}
+		return (
+			 <Column
+				  title="Actions"
+				  dataIndex="actions"
+				  key="actions"
+				  align={"center"}
+				  render={() => <Row justify="space-around">{buttons}</Row>}
+			 />
+		);
+
+	};
+
 	render() {
 		return (
 			 <Row type="flex" className={"loginCtn"} justify={"center"} align={"middle"}>
-				 <Col span={24} style={{height:"500px"}}>
+				 <Col span={24} style={{height: "500px"}}>
 					 <Row type={"flex"} justify={"center"} align={"middle"}>
-						 <Col span={24} style={{textAlign:"center"}}>
-							 <Table dataSource={this.state.dataSource} columns={this.state.columns}/>
+						 <Col span={24} style={{textAlign: "center"}}>
+							 <Table dataSource={this.state.dataSource}>
+								 <Column title="ID" dataIndex="userId" key="userId"/>
+								 <Column title="Username" dataIndex="username" key="username"/>
+								 <Column title="Email" dataIndex="email" key="email"/>
+								 {this.actionsColumn()}
+							 </Table>,
 						 </Col>
 					 </Row>
 					 <br/>
 					 <Row justify="space-between">
 						 <Button onClick={() => this.props.setHomeBody('HOME')}>Atrás</Button>
-						 <Button onClick={() => this.props.canMakeRequest(this.getUserData)}>Actualizar datos</Button>
+						 <Button onClick={() => this.props.canMakeRequest(this.getUserData)}>Actualizar
+							 datos</Button>
 					 </Row>
 				 </Col>
 			 </Row>
