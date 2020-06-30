@@ -18,21 +18,36 @@ class OrderProfile extends Component {
 		});
 	}
 
+	preparedCopies = (i) => {
+		console.log("Prepared copies: ",this.props.orderMovies[i]['preparedQuantity']);
+		if(this.props.order['orderStatus'] !== 1){
+			return(
+				 <Meta title={"Copias preparadas"} description={"Copias Pedidas: "+this.props.orderMovies[i]['preparedQuantity']} />
+			);
+		}
+		let showAlert = false;
+		let alertMessage = "Número de copias incorrecto";
+		if(this.state.preparedInput[i]){
+			if(!isNaN(parseInt(this.state.preparedInput[i])+1)){
+				if(parseInt(this.state.preparedInput[i]) > this.props.orderMovies[i]['quantity']){
+					showAlert = true;
+				}
+			}else{
+				showAlert = true;
+				alertMessage = "No ingresó un número";
+			}
+		}
+		return (
+			 <div>
+				 <Input placeholder={"Copias preparadas "} value={this.state.preparedInput[i] || ''} onChange={(e)=>this.handleChange(i,e)}/>
+				 {showAlert ? <Alert message={alertMessage} type="error" /> : null}
+			 </div>
+		);
+	};
+
 	MovieCards = () => {
 		let cards = [];
 		for(let i = 0; i < this.props.orderMovies.length;i++) {
-			let showAlert = false;
-			let alertMessage = "Número de copias incorrecto";
-			if(this.state.preparedInput[i]){
-				if(!isNaN(parseInt(this.state.preparedInput[i])+1)){
-					if(parseInt(this.state.preparedInput[i]) > this.props.orderMovies[i]['quantity']){
-						showAlert = true;
-					}
-				}else{
-					showAlert = true;
-					alertMessage = "No ingresó un número";
-				}
-			}
 			cards.push(
 				 <Card
 					  hoverable
@@ -42,8 +57,7 @@ class OrderProfile extends Component {
 				 >
 					 <Meta title={this.props.orderMovies[i]['name']} description={"Copias Pedidas: "+this.props.orderMovies[i]['quantity']} />
 					 <br/>
-					 <Input placeholder={"Copias preparadas "} value={this.state.preparedInput[i] || ''} onChange={(e)=>this.handleChange(i,e)}/>
-					 {showAlert ? <Alert message={alertMessage} type="error" /> : null}
+					 {this.preparedCopies(i)}
 				 </Card>
 			);
 		}

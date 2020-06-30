@@ -82,7 +82,8 @@ class AdminLayout extends Component {
 							 name: res[i]['name'],
 							 image: res[i]['image'],
 							 quantity: res[i]['quantity'],
-							 warehouseId: res[i]['warehouseId']
+							 warehouseId: res[i]['warehouseId'],
+							 preparedQuantity: res[i]['preparedQuantity']
 						 }
 					);
 				}
