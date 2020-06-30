@@ -92,8 +92,16 @@ class OrderProfile extends Component {
 							 </Button>
 						 </Col>
 						 <Col>
-							 <Button type="primary" size={'large'} block>
-								 Guardar
+							 <Button
+								  type="primary"
+								  size={'large'}
+								  block
+								  onClick={
+								  	() =>
+									     this.props.updateStatus(this.props.order['orderId'],this.props.order['orderStatus']+1)
+								  }
+							 >
+								 Cambiar status
 							 </Button>
 						 </Col>
 					 </Row>

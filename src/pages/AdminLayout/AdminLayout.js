@@ -33,6 +33,7 @@ class AdminLayout extends Component {
 	    this.canMakeRequest = this.canMakeRequest.bind(this);
 	    this.setOrderProfileDisplay = this.setOrderProfileDisplay.bind(this);
 	    this.setTabsDisplay = this.setTabsDisplay.bind(this);
+	    this.getUpdateOrderStatus = this.getUpdateOrderStatus.bind(this);
     }
 
     state = {
@@ -87,6 +88,37 @@ class AdminLayout extends Component {
 				console.log("Movie Info: ",prevState.orderMovieData);
 				return prevState;
 			});
+		}).catch(error => {
+			console.log("Hubo el error: ",error);
+		});
+	};
+
+	getUpdateOrderStatus = (orderId, orderStatus) => {
+		console.log("Updating order ",orderId," to status ",orderStatus);
+		let date = moment().format('YYYY-MM-DD[T]HH:mm:ss');
+		let me = this;
+		let params = {
+			orderStatus: orderStatus,
+			date: date
+		};
+		var url = withParams(constants.BACKEND_URL+"/api/v1/orders/"+orderId.toString(),params);
+		fetch(url, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json; charset=utf-8",
+				"Authorization": "bearer " + localStorage.getItem("authJWT")
+			}
+		}).then(response => {
+			const status = response['status'];
+			//console.log("Response: ",response, " status: ",status," - ",typeof status);
+			if(status === 200){
+				return response.json();
+			} else {
+				throw new Error('Something went wrong');
+			}
+		}).then(res => {
+			console.log("Success Updating status info", res);
+
 		}).catch(error => {
 			console.log("Hubo el error: ",error);
 		});
@@ -349,6 +381,7 @@ class AdminLayout extends Component {
 					 order={this.state.recordDisplayed}
 					 orderMovies={this.state.orderMovieData[this.state.recordDisplayed['orderId']]}
 					 goBack={this.setTabsDisplay}
+					 updateStatus={this.getUpdateOrderStatus}
 				/>;
 			default:
 				const gridStyle = {
