@@ -49,7 +49,8 @@ class AdminLayout extends Component {
 	    orderData: [],
 	    orderMovieData: {},
 	    recordDisplayed: {},
-	    nextStatusMessage: ""
+	    nextStatusMessage: "",
+	    activeKey: "1"
     };
 
 	getOrderMovies = () => {
@@ -128,6 +129,7 @@ class AdminLayout extends Component {
 				prevState.preparedOrderData = [];
 				prevState.dispatchedOrderData = [];
 				prevState.deliveredOrderData = [];
+				prevState.activeKey = (orderStatus-1).toString();
 				me.getOrders();
 				return prevState;
 			});
@@ -412,7 +414,7 @@ class AdminLayout extends Component {
 				}
 			case "ORDER_TABS":
 				return (
-					 <Tabs defaultActiveKey="1" centered>
+					 <Tabs defaultActiveKey={this.state.activeKey} centered>
 						 <TabPane tab="Pagado" key="1">
 							<ReactTable
 								 columns={columns.paidOrderColumns}
