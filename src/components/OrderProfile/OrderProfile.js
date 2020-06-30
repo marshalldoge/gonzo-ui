@@ -66,6 +66,23 @@ class OrderProfile extends Component {
 		this.setInputData();
 	}
 
+	nextStatusButton = () => {
+		if(this.props.nextStatusMessage === "") return null;
+		return (
+			 <Button
+				  type="primary"
+				  size={'large'}
+				  block
+				  onClick={
+					  () =>
+						   this.props.updateStatus(this.props.order['orderId'],this.props.order['orderStatus']+1)
+				  }
+			 >
+				 {this.props.nextStatusMessage}
+			 </Button>
+		);
+	};
+
 	render() {
 		return (
 			 <Row className={"orderProfileCtn"}>
@@ -92,17 +109,7 @@ class OrderProfile extends Component {
 							 </Button>
 						 </Col>
 						 <Col>
-							 <Button
-								  type="primary"
-								  size={'large'}
-								  block
-								  onClick={
-								  	() =>
-									     this.props.updateStatus(this.props.order['orderId'],this.props.order['orderStatus']+1)
-								  }
-							 >
-								 Cambiar status
-							 </Button>
+							 {this.nextStatusButton()}
 						 </Col>
 					 </Row>
 

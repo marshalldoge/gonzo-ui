@@ -47,7 +47,8 @@ class AdminLayout extends Component {
 	    deliveredOrderData: [],
 	    orderData: [],
 	    orderMovieData: {},
-	    recordDisplayed: {}
+	    recordDisplayed: {},
+	    nextStatusMessage: ""
     };
 
 	getOrderMovies = () => {
@@ -118,6 +119,16 @@ class AdminLayout extends Component {
 			}
 		}).then(res => {
 			console.log("Success Updating status info", res);
+			this.setState ((prevState) =>{
+				prevState.display = 'ORDER_TABS';
+				prevState.orderData = [];
+				prevState.paidOrderData = [];
+				prevState.preparedOrderData = [];
+				prevState.dispatchedOrderData = [];
+				prevState.deliveredOrderData = [];
+				me.getOrders();
+				return prevState;
+			});
 
 		}).catch(error => {
 			console.log("Hubo el error: ",error);
@@ -274,7 +285,26 @@ class AdminLayout extends Component {
 		console.log("Changing diplay to order profile!");
 		this.setState({
 			display: 'ORDER_PROFILE',
-			recordDisplayed: record
+			recordDisplayed: record,
+
+		});
+		this.setState ((prevState) =>{
+			prevState.display = 'ORDER_PROFILE';
+			prevState.recordDisplayed = record;
+			switch (record['orderStatus']) {
+				case 1:
+					prevState.nextStatusMessage = "Confirmar Preparado";
+					break;
+				case 2:
+					prevState.nextStatusMessage = "Confirmar Despachado";
+					break;
+				case 3:
+					prevState.nextStatusMessage = "Confirmar Entregado";
+					break;
+				case 4:
+					prevState.nextStatusMessage = "";
+			}
+			return prevState;
 		});
 	};
 
@@ -362,26 +392,43 @@ class AdminLayout extends Component {
 				return (
 					 <Tabs defaultActiveKey="1" centered>
 						 <TabPane tab="Pagado" key="1">
-							<ReactTable columns={columns.paidOrderColumns} data={this.state.paidOrderData} onClick={me.setOrderProfileDisplay}/>
+							<ReactTable
+								 columns={columns.paidOrderColumns}
+								 data={this.state.paidOrderData}
+								 onClick={me.setOrderProfileDisplay}
+							/>
 						 </TabPane>
 						 <TabPane tab="Preparado" key="2">
-							 <ReactTable columns={columns.preparedOrderColumns} data={this.state.preparedOrderData} onClick={me.setOrderProfileDisplay}/>
+							 <ReactTable
+								  columns={columns.preparedOrderColumns}
+								  data={this.state.preparedOrderData}
+								  onClick={me.setOrderProfileDisplay}
+							 />
 						 </TabPane>
 						 <TabPane tab="Despachados" key="3">
-							 <ReactTable columns={columns.dispatchedOrderColumns} data={this.state.dispatchedOrderData} onClick={me.setOrderProfileDisplay}/>
+							 <ReactTable
+								  columns={columns.dispatchedOrderColumns}
+								  data={this.state.dispatchedOrderData}
+								  onClick={me.setOrderProfileDisplay}
+							 />
 						 </TabPane>
 						 <TabPane tab="Entregados" key="4">
-							 <ReactTable columns={columns.dispatchedOrderColumns} data={this.state.deliveredOrderData} onClick={me.setOrderProfileDisplay}/>
+							 <ReactTable
+								  columns={columns.deliveredOrderColumns}
+								  data={this.state.deliveredOrderData}
+								  onClick={me.setOrderProfileDisplay}
+							 />
 						 </TabPane>
 					 </Tabs>
 				);
 			case "ORDER_PROFILE":
-				console.log('Record to show: ',this.state.recordDisplayed);
+				console.log('Record to show: ',this.state.nextStatusMessage);
 				return <OrderProfile
 					 order={this.state.recordDisplayed}
 					 orderMovies={this.state.orderMovieData[this.state.recordDisplayed['orderId']]}
 					 goBack={this.setTabsDisplay}
 					 updateStatus={this.getUpdateOrderStatus}
+					 nextStatusMessage={this.state.nextStatusMessage}
 				/>;
 			default:
 				const gridStyle = {

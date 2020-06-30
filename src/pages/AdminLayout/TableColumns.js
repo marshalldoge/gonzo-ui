@@ -28,9 +28,9 @@ export const preparedOrderColumns = [
 		key: 'orderId'
 	},
 	{
-		title: 'Fecha Pedido',
-		dataIndex: 'paidOrderDate',
-		key: 'paidOrderDate'
+		title: 'Fecha Preparado',
+		dataIndex: 'preparedOrderDate',
+		key: 'preparedOrderDate'
 	},
 	{
 		title: 'Cliente',
@@ -38,9 +38,9 @@ export const preparedOrderColumns = [
 		key: 'firstName'
 	},
 	{
-		title: 'Fecha de Despacho',
-		dataIndex: 'dispatchedOrderDate',
-		key: 'dispatchedOrderDate'
+		title: 'Fecha Solicitud Curier',
+		dataIndex: 'preparedOrderDate',
+		key: 'preparedOrderDate'
 	}
 ];
 
@@ -56,7 +56,7 @@ export const dispatchedOrderColumns = [
 		key: 'preparedOrderDate'
 	},
 	{
-		title: 'Fecha de Recojo',
+		title: 'Fecha Despacho',
 		dataIndex: 'dispatchedOrderDate',
 		key: 'dispatchedOrderDate'
 	}
