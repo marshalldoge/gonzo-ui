@@ -34,6 +34,7 @@ class AdminLayout extends Component {
 	    this.setOrderProfileDisplay = this.setOrderProfileDisplay.bind(this);
 	    this.setTabsDisplay = this.setTabsDisplay.bind(this);
 	    this.getUpdateOrderStatus = this.getUpdateOrderStatus.bind(this);
+	    this.updatePreparedCopies = this.updatePreparedCopies.bind(this);
     }
 
     state = {
@@ -83,7 +84,8 @@ class AdminLayout extends Component {
 							 image: res[i]['image'],
 							 quantity: res[i]['quantity'],
 							 warehouseId: res[i]['warehouseId'],
-							 preparedQuantity: res[i]['preparedQuantity']
+							 preparedQuantity: res[i]['preparedQuantity'],
+							 movieId: res[i]['movieId']
 						 }
 					);
 				}
@@ -106,6 +108,45 @@ class AdminLayout extends Component {
 		var url = withParams(constants.BACKEND_URL+"/api/v1/orders/"+orderId.toString(),params);
 		fetch(url, {
 			method: "POST",
+			headers: {
+				"Content-Type": "application/json; charset=utf-8",
+				"Authorization": "bearer " + localStorage.getItem("authJWT")
+			}
+		}).then(response => {
+			const status = response['status'];
+			//console.log("Response: ",response, " status: ",status," - ",typeof status);
+			if(status === 200){
+				return response.json();
+			} else {
+				throw new Error('Something went wrong');
+			}
+		}).then(res => {
+			console.log("Success Updating status info", res);
+			this.setState ((prevState) =>{
+				prevState.display = 'ORDER_TABS';
+				prevState.orderData = [];
+				prevState.paidOrderData = [];
+				prevState.preparedOrderData = [];
+				prevState.dispatchedOrderData = [];
+				prevState.deliveredOrderData = [];
+				me.getOrders();
+				return prevState;
+			});
+
+		}).catch(error => {
+			console.log("Hubo el error: ",error);
+		});
+	};
+
+	updatePreparedCopies = (orderId, preparedCopies) => {
+		console.log("Updating order ",orderId," to UPDATE COPIES:  ",preparedCopies);
+		let date = moment().format('YYYY-MM-DD[T]HH:mm:ss');
+		let me = this;
+		var body = JSON.stringify(preparedCopies);
+		var url = constants.BACKEND_URL+"/api/v1/orders/updatePreparedQuantities/"+orderId.toString();
+		fetch(url, {
+			method: "POST",
+			body: body,
 			headers: {
 				"Content-Type": "application/json; charset=utf-8",
 				"Authorization": "bearer " + localStorage.getItem("authJWT")
@@ -430,6 +471,7 @@ class AdminLayout extends Component {
 					 goBack={this.setTabsDisplay}
 					 updateStatus={this.getUpdateOrderStatus}
 					 nextStatusMessage={this.state.nextStatusMessage}
+					 updatePreparedCopies={this.updatePreparedCopies}
 				/>;
 			default:
 				const gridStyle = {

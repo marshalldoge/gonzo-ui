@@ -7,13 +7,29 @@ const { Title } = Typography;
 
 class OrderProfile extends Component {
 	state = {
-		preparedInput: []
+		preparedInput: [],
+		preparedMovieId: [],
+		disableConfirmPrepareButton: true
 	};
 
 	handleChange(idx,event) {
 		let value = event.target.value;
 		this.setState ((prevState) =>{
 			prevState.preparedInput[idx] = value;
+			let disabled = false;
+			for(let i = 0; i < prevState.preparedInput.length; i++){
+				if(isNaN(parseInt(prevState.preparedInput[i]))){
+					disabled = true || disabled;
+				}else{
+					if(parseInt(this.state.preparedInput[i]) > this.props.orderMovies[i]['quantity']){
+						disabled = true || disabled;
+					}
+					if(this.state.preparedInput[i] === ""){
+						disabled = true || disabled;
+					}
+				}
+			}
+			prevState.disableConfirmPrepareButton = disabled;
 			return prevState;
 		});
 	}
@@ -87,9 +103,23 @@ class OrderProfile extends Component {
 				  type="primary"
 				  size={'large'}
 				  block
+				  disabled={this.state.disableConfirmPrepareButton}
 				  onClick={
-					  () =>
-						   this.props.updateStatus(this.props.order['orderId'],this.props.order['orderStatus']+1)
+					  () => {
+						  if(this.props.order['orderStatus'] === 1) {
+						  	    let preparedCopies = [];
+							  for(let i = 0; i < this.props.orderMovies.length;i++) {
+								  preparedCopies.push(
+								  	 {
+									     movieId: this.props.orderMovies[i]['movieId'],
+									     preparedQuantity: this.state.preparedInput[i]
+								     }
+								     );
+							  }
+							  this.props.updatePreparedCopies(this.props.order['orderId'],preparedCopies);
+						  }
+					  	this.props.updateStatus(this.props.order['orderId'], this.props.order['orderStatus'] + 1)
+					  }
 				  }
 			 >
 				 {this.props.nextStatusMessage}
