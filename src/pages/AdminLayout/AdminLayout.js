@@ -162,12 +162,6 @@ class AdminLayout extends Component {
 			//console.log("Success Updating status info", res);
 			this.setState ((prevState) =>{
 				prevState.display = 'ORDER_TABS';
-				prevState.orderData = [];
-				prevState.paidOrderData = [];
-				prevState.preparedOrderData = [];
-				prevState.dispatchedOrderData = [];
-				prevState.deliveredOrderData = [];
-				me.getOrders();
 				return prevState;
 			});
 

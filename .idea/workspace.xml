@@ -16,11 +16,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/pages/AdminLayout/AdminLayout.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3602">
-              <caret line="496" column="16" lean-forward="true" selection-start-line="496" selection-start-column="16" selection-end-line="496" selection-end-column="16" />
+            <state relative-caret-position="293">
+              <caret line="163" column="49" selection-start-line="163" selection-start-column="49" selection-end-line="163" selection-end-column="49" />
               <folding>
                 <element signature="e#0#41#0" expanded="true" />
               </folding>
@@ -28,11 +28,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/components/OrderProfile/OrderProfile.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1617">
-              <caret line="139" column="16" lean-forward="true" selection-start-line="139" selection-start-column="16" selection-end-line="139" selection-end-column="16" />
+            <state relative-caret-position="327">
+              <caret line="106" column="32" lean-forward="true" selection-start-line="106" selection-start-column="32" selection-end-line="106" selection-end-column="32" />
               <folding>
                 <element signature="e#0#49#0" expanded="true" />
               </folding>
@@ -108,8 +108,8 @@
         <option value="$PROJECT_DIR$/src/components/ReactTable/ReactTable.js" />
         <option value="$PROJECT_DIR$/src/components/OrderProfile/_OrderProfile.scss" />
         <option value="$PROJECT_DIR$/src/pages/AdminLayout/TableColumns.js" />
-        <option value="$PROJECT_DIR$/src/pages/AdminLayout/AdminLayout.js" />
         <option value="$PROJECT_DIR$/src/components/OrderProfile/OrderProfile.js" />
+        <option value="$PROJECT_DIR$/src/pages/AdminLayout/AdminLayout.js" />
       </list>
     </option>
   </component>
@@ -300,12 +300,12 @@
       <workItem from="1592350355688" duration="2322000" />
       <workItem from="1593470849033" duration="1469000" />
       <workItem from="1593489503043" duration="832000" />
-      <workItem from="1593528208867" duration="19233000" />
+      <workItem from="1593528208867" duration="19686000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="80090000" />
+    <option name="totallyTimeSpent" value="80543000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="812" extended-state="0" />
@@ -568,22 +568,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/pages/AdminLayout/AdminLayout.js">
+    <entry file="file://$PROJECT_DIR$/src/components/OrderProfile/OrderProfile.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3602">
-          <caret line="496" column="16" lean-forward="true" selection-start-line="496" selection-start-column="16" selection-end-line="496" selection-end-column="16" />
+        <state relative-caret-position="327">
+          <caret line="106" column="32" lean-forward="true" selection-start-line="106" selection-start-column="32" selection-end-line="106" selection-end-column="32" />
           <folding>
-            <element signature="e#0#41#0" expanded="true" />
+            <element signature="e#0#49#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/OrderProfile/OrderProfile.js">
+    <entry file="file://$PROJECT_DIR$/src/pages/AdminLayout/AdminLayout.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1617">
-          <caret line="139" column="16" lean-forward="true" selection-start-line="139" selection-start-column="16" selection-end-line="139" selection-end-column="16" />
+        <state relative-caret-position="293">
+          <caret line="163" column="49" selection-start-line="163" selection-start-column="49" selection-end-line="163" selection-end-column="49" />
           <folding>
-            <element signature="e#0#49#0" expanded="true" />
+            <element signature="e#0#41#0" expanded="true" />
           </folding>
         </state>
       </provider>

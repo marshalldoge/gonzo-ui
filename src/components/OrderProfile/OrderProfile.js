@@ -97,12 +97,16 @@ class OrderProfile extends Component {
 
 	nextStatusButton = () => {
 		if(this.props.nextStatusMessage === "") return null;
+		let finalDisabled = false;
+		if(this.props.order['orderStatus'] === 1){
+			finalDisabled = this.state.disableConfirmPrepareButton;
+		}
 		return (
 			 <Button
 				  type="primary"
 				  size={'large'}
 				  block
-				  disabled={this.state.disableConfirmPrepareButton}
+				  disabled={finalDisabled}
 				  onClick={
 					  () => {
 						  if(this.props.order['orderStatus'] === 1) {
