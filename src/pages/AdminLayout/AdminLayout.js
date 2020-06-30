@@ -13,6 +13,7 @@ import * as constants from "../../constants";
 import LoadingGif from'../../assets/gif/loading.gif';
 import { Row,Col,Button,Layout, Menu, Breadcrumb, Typography, Select, Tabs, Card } from 'antd';
 import Logo from "../../assets/logos/piratebayLogo.png";
+import * as columns from './TableColumns';
 const { Header, Content, Footer } = Layout;
 const {Title} = Typography;
 const { Option } = Select;
@@ -64,8 +65,8 @@ class AdminLayout extends Component {
 	    }).then(res => {
 		    console.log("Success Getting order info", res);
 		    me.setState ((prevState) =>{
-		    	for(let i = 0; i < res.lenght; i++) {
-		    		switch(res['orderStatus']){
+		    	for(let i = 0; i < res.length; i++) {
+		    		switch(res[i]['orderStatus']){
 					    case 1:
 							prevState.paidOrderData.push(res[i]);
 					    	break;
@@ -80,6 +81,7 @@ class AdminLayout extends Component {
 					    	break;
 				    }
 			    }
+		    	console.log("INIT DATA: ",prevState);
 			    return prevState;
 		    });
 	    }).catch(error => {
@@ -246,16 +248,16 @@ class AdminLayout extends Component {
 				return (
 					 <Tabs defaultActiveKey="1" centered>
 						 <TabPane tab="Pagado" key="1">
-							<ReactTable/>
+							<ReactTable columns={columns.paidOrderColumns} data={this.state.paidOrderData}/>
 						 </TabPane>
 						 <TabPane tab="Preparado" key="2">
-
+							 <ReactTable columns={columns.preparedOrderColumns} data={this.state.preparedOrderData}/>
 						 </TabPane>
 						 <TabPane tab="Despachados" key="3">
-
+							 <ReactTable columns={columns.dispatchedOrderColumns} data={this.state.dispatchedOrderData}/>
 						 </TabPane>
 						 <TabPane tab="Entregados" key="4">
-
+							 <ReactTable columns={columns.dispatchedOrderColumns} data={this.state.deliveredOrderData}/>
 						 </TabPane>
 					 </Tabs>
 				);
