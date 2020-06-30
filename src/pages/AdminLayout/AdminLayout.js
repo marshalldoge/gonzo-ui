@@ -414,36 +414,49 @@ class AdminLayout extends Component {
 				}
 			case "ORDER_TABS":
 				return (
-					 <Tabs defaultActiveKey={this.state.activeKey} centered>
-						 <TabPane tab="Pagado" key="1">
-							<ReactTable
-								 columns={columns.paidOrderColumns}
-								 data={this.state.paidOrderData}
-								 onClick={me.setOrderProfileDisplay}
-							/>
-						 </TabPane>
-						 <TabPane tab="Preparado" key="2">
-							 <ReactTable
-								  columns={columns.preparedOrderColumns}
-								  data={this.state.preparedOrderData}
-								  onClick={me.setOrderProfileDisplay}
-							 />
-						 </TabPane>
-						 <TabPane tab="Despachados" key="3">
-							 <ReactTable
-								  columns={columns.dispatchedOrderColumns}
-								  data={this.state.dispatchedOrderData}
-								  onClick={me.setOrderProfileDisplay}
-							 />
-						 </TabPane>
-						 <TabPane tab="Entregados" key="4">
-							 <ReactTable
-								  columns={columns.deliveredOrderColumns}
-								  data={this.state.deliveredOrderData}
-								  onClick={me.setOrderProfileDisplay}
-							 />
-						 </TabPane>
-					 </Tabs>
+					 <div>
+						 <Tabs defaultActiveKey={this.state.activeKey} centered>
+							 <TabPane tab="Pagado" key="1">
+								 <ReactTable
+									  columns={columns.paidOrderColumns}
+									  data={this.state.paidOrderData}
+									  onClick={me.setOrderProfileDisplay}
+								 />
+							 </TabPane>
+							 <TabPane tab="Preparado" key="2">
+								 <ReactTable
+									  columns={columns.preparedOrderColumns}
+									  data={this.state.preparedOrderData}
+									  onClick={me.setOrderProfileDisplay}
+								 />
+							 </TabPane>
+							 <TabPane tab="Despachados" key="3">
+								 <ReactTable
+									  columns={columns.dispatchedOrderColumns}
+									  data={this.state.dispatchedOrderData}
+									  onClick={me.setOrderProfileDisplay}
+								 />
+							 </TabPane>
+							 <TabPane tab="Entregados" key="4">
+								 <ReactTable
+									  columns={columns.deliveredOrderColumns}
+									  data={this.state.deliveredOrderData}
+									  onClick={me.setOrderProfileDisplay}
+								 />
+							 </TabPane>
+						 </Tabs>
+						 <br/>
+						 <Row justify="flex-start">
+							 <Col>
+								 <Button type="dashed" size={'large'} block onClick={()=>this.setHomeBody('HOME')}>
+									 Atrás
+								 </Button>
+							 </Col>
+							 <Col>
+
+							 </Col>
+						 </Row>
+					 </div>
 				);
 			case "ORDER_PROFILE":
 				return <OrderProfile
