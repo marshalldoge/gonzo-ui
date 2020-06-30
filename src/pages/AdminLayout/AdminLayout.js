@@ -11,14 +11,16 @@ import moment from "moment";
 import {connect} from "react-redux";
 import * as constants from "../../constants";
 import LoadingGif from'../../assets/gif/loading.gif';
-import { Row,Col,Button,Layout, Menu, Breadcrumb, Typography, Select, message, Card } from 'antd';
+import { Row,Col,Button,Layout, Menu, Breadcrumb, Typography, Select, Tabs, Card } from 'antd';
 import Logo from "../../assets/logos/piratebayLogo.png";
 const { Header, Content, Footer } = Layout;
 const {Title} = Typography;
 const { Option } = Select;
+const { TabPane } = Tabs;
 
 
 const UserTable = React.lazy(() => import("../../views/UserTable/UserTable"));
+const ReactTable = React.lazy(() => import("../../components/ReactTable/ReactTable"));
 
 class AdminLayout extends Component {
     constructor(props) {
@@ -33,7 +35,56 @@ class AdminLayout extends Component {
         collapsed: false,
 	    display: "HOME",
 	    rolesArray: [],
-	    rolesMap: {}
+	    rolesMap: {},
+	    paidOrderData: [],
+	    preparedOrderData: [],
+	    dispatchedOrderData: [],
+	    deliveredOrderData: [],
+	    orderData: []
+    };
+
+    getOrders = () => {
+	    let me = this;
+	    console.log("Regresing!");
+	    var url = constants.BACKEND_URL+"/api/v1/orders";
+	    fetch(url, {
+		    method: "GET",
+		    headers: {
+			    "Content-Type": "application/json; charset=utf-8",
+			    "Authorization": "bearer " + localStorage.getItem("authJWT")
+		    }
+	    }).then(response => {
+		    const status = response['status'];
+		    //console.log("Response: ",response, " status: ",status," - ",typeof status);
+		    if(status === 200){
+			    return response.json();
+		    } else {
+			    throw new Error('Something went wrong');
+		    }
+	    }).then(res => {
+		    console.log("Success Getting order info", res);
+		    me.setState ((prevState) =>{
+		    	for(let i = 0; i < res.lenght; i++) {
+		    		switch(res['orderStatus']){
+					    case 1:
+							prevState.paidOrderData.push(res[i]);
+					    	break;
+					    case 2:
+						    prevState.preparedOrderData.push(res[i]);
+					    	break;
+					    case 3:
+						    prevState.dispatchedOrderData.push(res[i]);
+					    	break;
+					    case 4:
+						    prevState.deliveredOrderData.push(res[i]);
+					    	break;
+				    }
+			    }
+			    return prevState;
+		    });
+	    }).catch(error => {
+		    console.log("Hubo el error: ",error);
+	    });
     };
 
 	refreshJWT = () => {
@@ -150,6 +201,7 @@ class AdminLayout extends Component {
 	}
 
     componentDidMount = () => {
+		this.getOrders();
 	    this.refreshJWT();
     };
 
@@ -189,6 +241,25 @@ class AdminLayout extends Component {
 					this.setHomeBody('HOME');
 					return null;
 				}
+			case "ORDER_TABS":
+				console.log("Rendering orders_table");
+				return (
+					 <Tabs defaultActiveKey="1" centered>
+						 <TabPane tab="Pagado" key="1">
+							<ReactTable/>
+						 </TabPane>
+						 <TabPane tab="Preparado" key="2">
+
+						 </TabPane>
+						 <TabPane tab="Despachados" key="3">
+
+						 </TabPane>
+						 <TabPane tab="Entregados" key="4">
+
+						 </TabPane>
+					 </Tabs>
+				);
+				break;
 			default:
 				const gridStyle = {
 					width: '33%',
@@ -206,7 +277,7 @@ class AdminLayout extends Component {
 				}
 				if(this.state.rolesMap['PAGE_PRODUCT_MANAGEMENT']){
 					cards.push(
-						 <Card.Grid key={"PAGE_PRODUCT_MANAGEMENT"} className="card" style={gridStyle}>
+						 <Card.Grid key={"PAGE_PRODUCT_MANAGEMENT"} className="card" style={gridStyle} onClick={() => this.refreshJWTWithDisplayValidation("ORDER_TABS")}>
 							 Gestionar Productos
 						 </Card.Grid>
 					);
