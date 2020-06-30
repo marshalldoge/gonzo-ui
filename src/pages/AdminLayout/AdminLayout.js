@@ -41,8 +41,52 @@ class AdminLayout extends Component {
 	    preparedOrderData: [],
 	    dispatchedOrderData: [],
 	    deliveredOrderData: [],
-	    orderData: []
+	    orderData: [],
+	    orderMovieData: {}
     };
+
+	getOrderMovies = () => {
+		let me = this;
+		console.log("Regresing!");
+		var url = constants.BACKEND_URL+"/api/v1/orders/movies";
+		fetch(url, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json; charset=utf-8",
+				"Authorization": "bearer " + localStorage.getItem("authJWT")
+			}
+		}).then(response => {
+			const status = response['status'];
+			//console.log("Response: ",response, " status: ",status," - ",typeof status);
+			if(status === 200){
+				return response.json();
+			} else {
+				throw new Error('Something went wrong');
+			}
+		}).then(res => {
+			console.log("Success Getting MOVIES info", res);
+			me.setState ((prevState) =>{
+
+				for(let i = 0; i < res.length; i++) {
+					if(prevState.orderMovieData[res[i]['orderId']] === undefined) {
+						prevState.orderMovieData[res[i]['orderId']] = [];
+					}
+					prevState.orderMovieData[res[i]['orderId']].push(
+						 {
+							 name: res[i]['name'],
+							 image: res[i]['image'],
+							 quantity: res[i]['quantity'],
+							 warehouseId: res[i]['warehouseId']
+						 }
+					);
+				}
+				console.log("Movie Info: ",prevState.orderMovieData);
+				return prevState;
+			});
+		}).catch(error => {
+			console.log("Hubo el error: ",error);
+		});
+	};
 
     getOrders = () => {
 	    let me = this;
@@ -204,6 +248,7 @@ class AdminLayout extends Component {
 
     componentDidMount = () => {
 		this.getOrders();
+		this.getOrderMovies();
 	    this.refreshJWT();
     };
 
