@@ -54,7 +54,6 @@ class AdminLayout extends Component {
 
 	getOrderMovies = () => {
 		let me = this;
-		console.log("Regresing!");
 		var url = constants.BACKEND_URL+"/api/v1/orders/movies";
 		fetch(url, {
 			method: "GET",
@@ -71,7 +70,7 @@ class AdminLayout extends Component {
 				throw new Error('Something went wrong');
 			}
 		}).then(res => {
-			console.log("Success Getting MOVIES info", res);
+			//console.log("Success Getting MOVIES info", res);
 			me.setState ((prevState) =>{
 
 				for(let i = 0; i < res.length; i++) {
@@ -89,7 +88,7 @@ class AdminLayout extends Component {
 						 }
 					);
 				}
-				console.log("Movie Info: ",prevState.orderMovieData);
+				//console.log("Movie Info: ",prevState.orderMovieData);
 				return prevState;
 			});
 		}).catch(error => {
@@ -98,7 +97,7 @@ class AdminLayout extends Component {
 	};
 
 	getUpdateOrderStatus = (orderId, orderStatus) => {
-		console.log("Updating order ",orderId," to status ",orderStatus);
+		//console.log("Updating order ",orderId," to status ",orderStatus);
 		let date = moment().format('YYYY-MM-DD[T]HH:mm:ss');
 		let me = this;
 		let params = {
@@ -121,7 +120,7 @@ class AdminLayout extends Component {
 				throw new Error('Something went wrong');
 			}
 		}).then(res => {
-			console.log("Success Updating status info", res);
+			//console.log("Success Updating status info", res);
 			this.setState ((prevState) =>{
 				prevState.display = 'ORDER_TABS';
 				prevState.orderData = [];
@@ -139,7 +138,7 @@ class AdminLayout extends Component {
 	};
 
 	updatePreparedCopies = (orderId, preparedCopies) => {
-		console.log("Updating order ",orderId," to UPDATE COPIES:  ",preparedCopies);
+		//console.log("Updating order ",orderId," to UPDATE COPIES:  ",preparedCopies);
 		let date = moment().format('YYYY-MM-DD[T]HH:mm:ss');
 		let me = this;
 		var body = JSON.stringify(preparedCopies);
@@ -160,7 +159,7 @@ class AdminLayout extends Component {
 				throw new Error('Something went wrong');
 			}
 		}).then(res => {
-			console.log("Success Updating status info", res);
+			//console.log("Success Updating status info", res);
 			this.setState ((prevState) =>{
 				prevState.display = 'ORDER_TABS';
 				prevState.orderData = [];
@@ -179,7 +178,6 @@ class AdminLayout extends Component {
 
     getOrders = () => {
 	    let me = this;
-	    console.log("Regresing!");
 	    var url = constants.BACKEND_URL+"/api/v1/orders";
 	    fetch(url, {
 		    method: "GET",
@@ -196,7 +194,6 @@ class AdminLayout extends Component {
 			    throw new Error('Something went wrong');
 		    }
 	    }).then(res => {
-		    console.log("Success Getting order info", res);
 		    me.setState ((prevState) =>{
 		    	for(let i = 0; i < res.length; i++) {
 		    		switch(res[i]['orderStatus']){
@@ -230,7 +227,6 @@ class AdminLayout extends Component {
 					    	break;
 				    }
 			    }
-		    	console.log("INIT DATA: ",prevState);
 			    return prevState;
 		    });
 	    }).catch(error => {
@@ -240,7 +236,6 @@ class AdminLayout extends Component {
 
 	refreshJWT = () => {
 		let me = this;
-		console.log("Regresing!");
 		var data = JSON.stringify({
 			refreshToken: localStorage.getItem('refreshJWT')
 		});
@@ -260,7 +255,6 @@ class AdminLayout extends Component {
 				throw new Error('Something went wrong');
 			}
 		}).then(res => {
-			console.log("Success Refreshing");
 			localStorage.setItem('authJWT', res.authentication);
 			localStorage.setItem('refreshJWT', res.refresh);
 			me.setRoles();
@@ -271,7 +265,6 @@ class AdminLayout extends Component {
 
 	refreshJWTWithDisplayValidation = (display) => {
 		let me = this;
-		console.log("Regresing!");
 		var data = JSON.stringify({
 			refreshToken: localStorage.getItem('refreshJWT')
 		});
@@ -303,7 +296,6 @@ class AdminLayout extends Component {
 
 
 	canMakeRequest = (fnc) => {
-		console.log("Evaluating JWT state!");
 		if(isTokenValid('authJWT')) {
 			let message = "Auth Token is still valid with " + tokenTimeLeft('authJWT') + " s. left" + "\n" +
 				 "Refresh Token is still valid with " + tokenTimeLeft('refreshJWT') + " s. left";
@@ -324,7 +316,6 @@ class AdminLayout extends Component {
 	};
 
 	setOrderProfileDisplay(record){
-		console.log("Changing diplay to order profile!");
 		this.setState({
 			display: 'ORDER_PROFILE',
 			recordDisplayed: record,
@@ -351,7 +342,6 @@ class AdminLayout extends Component {
 	};
 
 	setTabsDisplay(record){
-		console.log("Changing diplay to order profile!");
 		this.setState({
 			display: 'ORDER_TABS',
 			recordDisplayed: record
@@ -369,7 +359,6 @@ class AdminLayout extends Component {
 			rolesArray: roles,
 			display: display
 		});
-		console.log("RolesWithDisplay: ",rolesMap);
 	}
 
 
@@ -383,7 +372,6 @@ class AdminLayout extends Component {
 			rolesMap: rolesMap,
 			rolesArray: roles
 		});
-		console.log("RolesMap: ",rolesMap);
 	}
 
     componentDidMount = () => {
@@ -419,7 +407,6 @@ class AdminLayout extends Component {
 		let me = this;
 		switch(this.state.display) {
 			case "USER_TABLE":
-				console.log("Rendering user_table");
 				if(this.state.rolesMap['PAGE_USER_MANAGEMENT']) {
 					return (
 						 <UserTable canMakeRequest={this.canMakeRequest} setHomeBody={this.setHomeBody}
@@ -430,7 +417,6 @@ class AdminLayout extends Component {
 					return null;
 				}
 			case "ORDER_TABS":
-				console.log("Rendering orders_table");
 				return (
 					 <Tabs defaultActiveKey="1" centered>
 						 <TabPane tab="Pagado" key="1">
@@ -464,7 +450,6 @@ class AdminLayout extends Component {
 					 </Tabs>
 				);
 			case "ORDER_PROFILE":
-				console.log('Record to show: ',this.state.nextStatusMessage);
 				return <OrderProfile
 					 order={this.state.recordDisplayed}
 					 orderMovies={this.state.orderMovieData[this.state.recordDisplayed['orderId']]}
@@ -480,7 +465,6 @@ class AdminLayout extends Component {
 					height: '100px'
 				};
 				let cards = [];
-				//console.log("Roles available: ",roles," ? ");
 				if(this.state.rolesMap['PAGE_USER_MANAGEMENT']){
 					cards.push(
 						 <Card.Grid key={"PAGE_USER_MANAGEMENT"} className="card" style={gridStyle} onClick={() => this.refreshJWTWithDisplayValidation("USER_TABLE")}>
@@ -491,7 +475,7 @@ class AdminLayout extends Component {
 				if(this.state.rolesMap['PAGE_PRODUCT_MANAGEMENT']){
 					cards.push(
 						 <Card.Grid key={"PAGE_PRODUCT_MANAGEMENT"} className="card" style={gridStyle} onClick={() => this.refreshJWTWithDisplayValidation("ORDER_TABS")}>
-							 Gestionar Productos
+							 Gestionar Pedidos
 						 </Card.Grid>
 					);
 				}
@@ -510,7 +494,6 @@ class AdminLayout extends Component {
 	};
 
     render() {
-        //console.log("LOADING: ",this.state.loadedServices);
         return (
 	         <Layout>
 		         <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>

@@ -35,7 +35,6 @@ class OrderProfile extends Component {
 	}
 
 	preparedCopies = (i) => {
-		console.log("Prepared copies: ",this.props.orderMovies[i]['preparedQuantity']);
 		if(this.props.order['orderStatus'] !== 1){
 			return(
 				 <Meta title={"Copias preparadas"} description={"Copias Pedidas: "+this.props.orderMovies[i]['preparedQuantity']} />
