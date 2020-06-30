@@ -70,7 +70,7 @@ class OrderProfile extends Component {
 					  cover={<img className={"movieCardImage"} alt="Image movie" src={this.props.orderMovies[i]['image']} />}
 					  key={i}
 				 >
-					 <Meta title={this.props.orderMovies[i]['name']} description={"Copias Pedidas: "+this.props.orderMovies[i]['quantity']} />
+					 <Meta title={"Blue-Ray "+this.props.orderMovies[i]['name']} description={"Copias Pedidas: "+this.props.orderMovies[i]['quantity']} />
 					 <br/>
 					 {this.preparedCopies(i)}
 				 </Card>
