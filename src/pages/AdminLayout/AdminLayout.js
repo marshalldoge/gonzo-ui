@@ -22,6 +22,7 @@ const { TabPane } = Tabs;
 
 const UserTable = React.lazy(() => import("../../views/UserTable/UserTable"));
 const ReactTable = React.lazy(() => import("../../components/ReactTable/ReactTable"));
+const OrderProfile = React.lazy(() => import("../../components/OrderProfile/OrderProfile"));
 
 class AdminLayout extends Component {
     constructor(props) {
@@ -30,6 +31,8 @@ class AdminLayout extends Component {
 	    this.setHomeBody = this.setHomeBody.bind(this);
 	    this.refreshJWT = this.refreshJWT.bind(this);
 	    this.canMakeRequest = this.canMakeRequest.bind(this);
+	    this.setOrderProfileDisplay = this.setOrderProfileDisplay.bind(this);
+	    this.setTabsDisplay = this.setTabsDisplay.bind(this);
     }
 
     state = {
@@ -42,7 +45,8 @@ class AdminLayout extends Component {
 	    dispatchedOrderData: [],
 	    deliveredOrderData: [],
 	    orderData: [],
-	    orderMovieData: {}
+	    orderMovieData: {},
+	    recordDisplayed: {}
     };
 
 	getOrderMovies = () => {
@@ -112,16 +116,32 @@ class AdminLayout extends Component {
 		    	for(let i = 0; i < res.length; i++) {
 		    		switch(res[i]['orderStatus']){
 					    case 1:
-							prevState.paidOrderData.push(res[i]);
+							prevState.paidOrderData.push(
+								 {
+									 ...res[i],
+									 key: i
+								 });
 					    	break;
 					    case 2:
-						    prevState.preparedOrderData.push(res[i]);
+						    prevState.preparedOrderData.push(
+						     {
+							     ...res[i],
+							     key: i
+						     });
 					    	break;
 					    case 3:
-						    prevState.dispatchedOrderData.push(res[i]);
+						    prevState.dispatchedOrderData.push(
+							     {
+								     ...res[i],
+								     key: i
+							     });
 					    	break;
 					    case 4:
-						    prevState.deliveredOrderData.push(res[i]);
+						    prevState.deliveredOrderData.push(
+							     {
+								     ...res[i],
+								     key: i
+							     });
 					    	break;
 				    }
 			    }
@@ -218,6 +238,22 @@ class AdminLayout extends Component {
 		}
 	};
 
+	setOrderProfileDisplay(record){
+		console.log("Changing diplay to order profile!");
+		this.setState({
+			display: 'ORDER_PROFILE',
+			recordDisplayed: record
+		});
+	};
+
+	setTabsDisplay(record){
+		console.log("Changing diplay to order profile!");
+		this.setState({
+			display: 'ORDER_TABS',
+			recordDisplayed: record
+		});
+	};
+
 	setRolesForNewDisplay(display) {
 		let roles = getRoles('authJWT');
 		let rolesMap = {};
@@ -276,6 +312,7 @@ class AdminLayout extends Component {
 	};
 
 	Body = () => {
+		let me = this;
 		switch(this.state.display) {
 			case "USER_TABLE":
 				console.log("Rendering user_table");
@@ -293,20 +330,26 @@ class AdminLayout extends Component {
 				return (
 					 <Tabs defaultActiveKey="1" centered>
 						 <TabPane tab="Pagado" key="1">
-							<ReactTable columns={columns.paidOrderColumns} data={this.state.paidOrderData}/>
+							<ReactTable columns={columns.paidOrderColumns} data={this.state.paidOrderData} onClick={me.setOrderProfileDisplay}/>
 						 </TabPane>
 						 <TabPane tab="Preparado" key="2">
-							 <ReactTable columns={columns.preparedOrderColumns} data={this.state.preparedOrderData}/>
+							 <ReactTable columns={columns.preparedOrderColumns} data={this.state.preparedOrderData} onClick={me.setOrderProfileDisplay}/>
 						 </TabPane>
 						 <TabPane tab="Despachados" key="3">
-							 <ReactTable columns={columns.dispatchedOrderColumns} data={this.state.dispatchedOrderData}/>
+							 <ReactTable columns={columns.dispatchedOrderColumns} data={this.state.dispatchedOrderData} onClick={me.setOrderProfileDisplay}/>
 						 </TabPane>
 						 <TabPane tab="Entregados" key="4">
-							 <ReactTable columns={columns.dispatchedOrderColumns} data={this.state.deliveredOrderData}/>
+							 <ReactTable columns={columns.dispatchedOrderColumns} data={this.state.deliveredOrderData} onClick={me.setOrderProfileDisplay}/>
 						 </TabPane>
 					 </Tabs>
 				);
-				break;
+			case "ORDER_PROFILE":
+				console.log('Record to show: ',this.state.recordDisplayed);
+				return <OrderProfile
+					 order={this.state.recordDisplayed}
+					 orderMovies={this.state.orderMovieData[this.state.recordDisplayed['orderId']]}
+					 goBack={this.setTabsDisplay}
+				/>;
 			default:
 				const gridStyle = {
 					width: '33%',

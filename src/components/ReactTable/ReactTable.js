@@ -5,14 +5,28 @@ import matchSorter from 'match-sorter'
 
 
 class ReactTable extends Component {
+	// eslint-disable-next-line no-useless-constructor
+	constructor(props) {
+		super(props);
+	}
+
 	state = {
 
 	};
 
 	render() {
-		console.log('rendering order table: ',this.props.columns, " ", this.props.data);
+		let me = this;
+		console.log("Props in table: ",this.props);
 		return (
-			 <Table columns={this.props.columns} dataSource={this.props.data} />
+			 <Table
+				  columns={this.props.columns}
+				  dataSource={this.props.data}
+				  onRow={(record, rowIndex) => {
+					  return {
+						  onClick: event => me.props.onClick(record)// click row
+					  };
+				  }}
+			 />
 		)
 	}
 }
