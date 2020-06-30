@@ -131,12 +131,27 @@ class OrderProfile extends Component {
 	};
 
 	render() {
+		let orderStatusMap = "";
+		switch (this.props.order['orderStatus']) {
+			case 1:
+				orderStatusMap = "Pedido Pagado";
+				break;
+			case 2:
+				orderStatusMap = "Pedido Preparado";
+				break;
+			case 3:
+				orderStatusMap = "Pedido Despachado";
+				break;
+			case 4:
+				orderStatusMap = "Pedido Entregado";
+				break;
+		}
 		return (
 			 <Row className={"orderProfileCtn"}>
 				 <Col span={24}>
 					 <Row className={"pedidoCtn"} justify="center">
 						 <Col span={6}>
-							 <Title level={2}>Pedido #{this.props.order['orderId']}</Title>
+							 <Title level={2}>{orderStatusMap + " Id:"+this.props.order['orderId']}</Title>
 						 </Col>
 					 </Row>
 					 <Row className={"peliculasCtn"} >
