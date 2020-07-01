@@ -2,6 +2,7 @@ import React, {Component, Suspense} from "react";
 import {Row,Col, Card, Typography, Button,Input, Alert, Collapse, Steps, List} from 'antd';
 import { UserOutlined, SolutionOutlined, LoadingOutlined, SmileOutlined } from '@ant-design/icons';
 import './_OrderProfile.scss'
+import moment from "../../pages/AdminLayout/AdminLayout";
 // A great library for fuzzy filtering/sorting items
 const { Meta } = Card;
 const { Title } = Typography;
@@ -57,7 +58,7 @@ class OrderProfile extends Component {
 	preparedCopies = (i) => {
 		if(this.props.order['orderStatus'] !== 1){
 			return(
-				 <Meta title={"Copias preparadas"} description={"Copias Pedidas: "+this.props.orderMovies[i]['preparedQuantity']} />
+				 <Meta title={"Copias preparadas"} description={this.props.orderMovies[i]['preparedQuantity']} />
 			);
 		}
 		let showAlert = false;
@@ -197,7 +198,16 @@ class OrderProfile extends Component {
 					  placeholder="Descripción"
 					  autoSize={{ minRows: 3, maxRows: 5 }}
 				 />
-				 <Button type={'danger'} block>Reportar Problema</Button>
+				 <Button
+					  type={'danger'}
+					  block
+					  onClick={() => this.props.createProblem(
+					  	 this.state.problemTitle,
+						   this.state.problemDescription,
+						   this.props.order['orderStatus'],
+						   this.props.order['orderId']
+					  )}
+				 >Reportar Problema</Button>
 			 </Row>
 		)
 	};

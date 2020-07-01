@@ -35,6 +35,7 @@ class AdminLayout extends Component {
 	    this.setTabsDisplay = this.setTabsDisplay.bind(this);
 	    this.getUpdateOrderStatus = this.getUpdateOrderStatus.bind(this);
 	    this.updatePreparedCopies = this.updatePreparedCopies.bind(this);
+	    this.createProblem = this.createProblem.bind(this);
     }
 
     state = {
@@ -74,7 +75,7 @@ class AdminLayout extends Component {
 		}).then(res => {
 			//console.log("Success Getting MOVIES info", res);
 			me.setState ((prevState) =>{
-
+				prevState.orderProblemData = {};
 				for(let i = 0; i < res.length; i++) {
 					if(prevState.orderProblemData[res[i]['orderId']] === undefined) {
 						prevState.orderProblemData[res[i]['orderId']] = [];
@@ -96,6 +97,47 @@ class AdminLayout extends Component {
 			console.log("Hubo el error: ",error);
 		});
 	};
+
+	createProblem = (title, description, orderStatus, orderId) => {
+
+		let me = this;
+		let params = {
+			orderId: orderId
+		};
+		let url = withParams(constants.BACKEND_URL+"/api/v1/problems",params);
+		let date = moment().format('YYYY-MM-DD[T]HH:mm:ss');
+		let body = JSON.stringify({
+			title: title,
+			problemDescription: description,
+			orderStatus: orderStatus,
+			date: date
+		});
+		fetch(url, {
+			method: "POST",
+			body: body,
+			headers: {
+				"Content-Type": "application/json; charset=utf-8",
+				"Authorization": "bearer " + localStorage.getItem("authJWT")
+			}
+		}).then(response => {
+			const status = response['status'];
+			//console.log("Response: ",response, " status: ",status," - ",typeof status);
+			if(status === 200){
+				return response.json();
+			} else {
+				throw new Error('Something went wrong');
+			}
+		}).then(res => {
+			//console.log("Success Getting MOVIES info", res);
+			me.setState ((prevState) =>{
+				me.getOrderProblems();
+				return prevState;
+			});
+		}).catch(error => {
+			console.log("Hubo el error: ",error);
+		});
+	};
+
 
 	getOrderMovies = () => {
 		let me = this;
@@ -512,6 +554,7 @@ class AdminLayout extends Component {
 					 updateStatus={this.getUpdateOrderStatus}
 					 nextStatusMessage={this.state.nextStatusMessage}
 					 updatePreparedCopies={this.updatePreparedCopies}
+					 createProblem={this.createProblem}
 				/>;
 			default:
 				const gridStyle = {
@@ -565,6 +608,4 @@ class AdminLayout extends Component {
     }
 }
 
-export default withRouter(connect(null,{setIdAppUser,setAppUser,setModules,setClientData,
-    setNitIdClientHashMap,setClientBillNameArray,setClientNitArray,setNitClientHashMap,
-    setItemQuantityHashMap,setItemQuantityCode, setWarehouse, setShift, setCompany, setCurrency, setMeasure})(AdminLayout));
+export default AdminLayout;
