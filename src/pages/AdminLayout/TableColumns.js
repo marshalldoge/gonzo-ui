@@ -82,5 +82,10 @@ export const deliveredOrderColumns = [
 		title: 'Fecha de Entregado',
 		dataIndex: 'deliveredOrderDate',
 		key: 'deliveredOrderDate'
+	},
+	{
+		title: 'Dirección',
+		dataIndex: 'address',
+		key: 'address'
 	}
 ];

@@ -1,11 +1,37 @@
 .orderProfileCtn {
   width: 100%;
+  background-color: #F9F9F9;
+}
+.movieCardsRowCtn {
+  height: 90%;
+}
+.movieCardsCtn {
+  overflow-y: scroll;
+  height: 100%;
+}
+.movieCardsCtn::-webkit-scrollbar {
+  width: 2px;
+}
+
+.movieCardsCtn::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+.movieCardsCtn::-webkit-scrollbar-thumb {
+  background-color: slategray;
+  outline: 1px solid #ECECF3;
 }
 .movieCardImage {
   height: 200px;
   width: 170px;
 }
 .pedidoCtn {
-  text-align: center;
+
+}
+.moviesCtn {
+
+}
+.collapse {
+  width: 100%;
 }
 

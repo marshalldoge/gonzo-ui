@@ -1,15 +1,35 @@
 import React, {Component, Suspense} from "react";
-import {Row,Col, Card, Typography, Button,Input, Alert} from 'antd';
+import {Row,Col, Card, Typography, Button,Input, Alert, Collapse, Steps, List} from 'antd';
+import { UserOutlined, SolutionOutlined, LoadingOutlined, SmileOutlined } from '@ant-design/icons';
 import './_OrderProfile.scss'
 // A great library for fuzzy filtering/sorting items
 const { Meta } = Card;
 const { Title } = Typography;
+const { TextArea } = Input;
+const { Panel } = Collapse;
+const { Step } = Steps;
 
 class OrderProfile extends Component {
 	state = {
 		preparedInput: [],
 		preparedMovieId: [],
-		disableConfirmPrepareButton: true
+		disableConfirmPrepareButton: true,
+		problemDescription: "",
+		problemTitle: ""
+	};
+
+
+	componentDidMount() {
+		this.setInputData();
+	}
+
+
+	onChange = ({ target: { value } }) => {
+		this.setState({ problemDescription: value });
+	};
+
+	onChangeTitle = ({ target: { value } }) => {
+		this.setState({ problemTitle: value });
 	};
 
 	handleChange(idx,event) {
@@ -60,21 +80,46 @@ class OrderProfile extends Component {
 		);
 	};
 
+	OrderDescription = () => {
+		return (
+			 <Row className={"descriptionRow"}>
+				 <Col>
+					 <p>Fecha</p>
+
+				 </Col>
+			 </Row>
+		)
+	};
+
+
+	CustomCard = (i) => {
+		return (
+			 <Row justify={"start"}>
+				 <Col span={10}>
+					 <img className={"movieCardImage"} alt="Image movie" src={this.props.orderMovies[i]['image']} />
+				 </Col>
+				 <Col span={10}>
+					<Row>
+						{"Blue-Ray "+this.props.orderMovies[i]['name']}
+					</Row>
+					 <Row>
+						 {"Copias Pedidas: "+this.props.orderMovies[i]['quantity']}
+					 </Row>
+					 <br/>
+					 {this.preparedCopies(i)}
+				 </Col>
+			 </Row>
+		)
+	};
+
 	MovieCards = () => {
 		let cards = [];
 		for(let i = 0; i < this.props.orderMovies.length;i++) {
 			cards.push(
-				 <Card
-					  hoverable
-					  style={{ width: 170 }}
-					  cover={<img className={"movieCardImage"} alt="Image movie" src={this.props.orderMovies[i]['image']} />}
-					  key={i}
-				 >
-					 <Meta title={"Blue-Ray "+this.props.orderMovies[i]['name']} description={"Copias Pedidas: "+this.props.orderMovies[i]['quantity']} />
-					 <br/>
-					 {this.preparedCopies(i)}
-				 </Card>
+				 this.CustomCard(i)
 			);
+			cards.push(<br/>);
+			cards.push(<br/>);
 		}
 		return cards;
 	};
@@ -91,9 +136,71 @@ class OrderProfile extends Component {
 		});
 	}
 
-	componentDidMount() {
-		this.setInputData();
-	}
+	OrderStatus = () => {
+		let loadingIcon = <LoadingOutlined />;
+		let currentOrderStatus = this.props.order['orderStatus']-1;
+		return (
+			 <Steps direction="vertical" size="small" current={this.props.order['orderStatus']-1}>
+				 <Step
+					  title="Pagado"
+					  description={this.props.order['paidOrderDate']}
+				 />
+				 <Step
+					  title="Preparado"
+					  description={this.props.order['preparedOrderDate']}
+					  icon={currentOrderStatus === 0 ? loadingIcon : null}
+				 />
+				 <Step
+					  title="Despachado"
+					  description={this.props.order['dispatchedOrderDate']}
+					  icon={currentOrderStatus === 1? loadingIcon : null}
+				 />
+				 <Step
+					  title="Entregado"
+					  description={this.props.order['deliveredOrderDate']}
+					  icon={currentOrderStatus === 2 ? loadingIcon : null}
+				 />
+			 </Steps>
+		);
+	};
+
+	OrderProblems = () => {
+		return (
+			 <List
+				  itemLayout="horizontal"
+				  dataSource={this.props.orderProblems}
+				  renderItem={item => (
+					   <List.Item>
+						   <List.Item.Meta
+								title={item.title+ ' - ' +item['date']}
+								description={item.problemDescription}
+						   />
+					   </List.Item>
+				  )}
+			 />
+		);
+	};
+
+	NewProblemForm = () => {
+		return (
+			 <Row>
+				 <TextArea
+					  placeholder="Título"
+					  autoSize
+					  value={this.state.problemTitle}
+					  onChange={this.onChangeTitle}
+				 />
+				 <br/>
+				 <TextArea
+					  value={this.state.problemDescription}
+					  onChange={this.onChange}
+					  placeholder="Descripción"
+					  autoSize={{ minRows: 3, maxRows: 5 }}
+				 />
+				 <Button type={'danger'} block>Reportar Problema</Button>
+			 </Row>
+		)
+	};
 
 	nextStatusButton = () => {
 		if(this.props.nextStatusMessage === "") return null;
@@ -149,18 +256,28 @@ class OrderProfile extends Component {
 		return (
 			 <Row className={"orderProfileCtn"}>
 				 <Col span={24}>
-					 <Row className={"pedidoCtn"} justify="center">
+					 <Row className={"pedidoCtn"} justify="flex-start">
 						 <Col span={6}>
-							 <Title level={2}>{orderStatusMap + " Id:"+this.props.order['orderId']}</Title>
+							 <Title level={2}>{"Pedido "+this.props.order['orderId']}</Title>
 						 </Col>
 					 </Row>
-					 <Row className={"peliculasCtn"} >
-						 <Col span={6}>
-							 <Title level={3}>Películas</Title>
+					 <Row className={"moviesCtn"} justify="start">
+						 <Col span={12}>
+							 <Title level={2}>Películas</Title>
+							 <Row className={"movieCardsRowCtn"} justify="start">
+								 <Col className={"movieCardsCtn"} span={22}>
+									 {this.MovieCards()}
+								 </Col>
+							 </Row>
 						 </Col>
-					 </Row>
-					 <Row justify="space-around">
-						 {this.MovieCards()}
+						 <Col span={12}>
+							 <Title level={2}>Estado</Title>
+							 {this.OrderStatus()}
+							 <Title level={2}>Problemas</Title>
+							 {this.OrderProblems()}
+							 <Title level={4}>Agregar Problema</Title>
+							 {this.NewProblemForm()}
+						 </Col>
 					 </Row>
 					 <br/>
 					 <br/>

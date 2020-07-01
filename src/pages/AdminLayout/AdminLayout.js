@@ -48,10 +48,54 @@ class AdminLayout extends Component {
 	    deliveredOrderData: [],
 	    orderData: [],
 	    orderMovieData: {},
+	    orderProblemData: {},
 	    recordDisplayed: {},
 	    nextStatusMessage: "",
 	    activeKey: "1"
     };
+
+	getOrderProblems = () => {
+		let me = this;
+		var url = constants.BACKEND_URL+"/api/v1/orders/problems";
+		fetch(url, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json; charset=utf-8",
+				"Authorization": "bearer " + localStorage.getItem("authJWT")
+			}
+		}).then(response => {
+			const status = response['status'];
+			//console.log("Response: ",response, " status: ",status," - ",typeof status);
+			if(status === 200){
+				return response.json();
+			} else {
+				throw new Error('Something went wrong');
+			}
+		}).then(res => {
+			//console.log("Success Getting MOVIES info", res);
+			me.setState ((prevState) =>{
+
+				for(let i = 0; i < res.length; i++) {
+					if(prevState.orderProblemData[res[i]['orderId']] === undefined) {
+						prevState.orderProblemData[res[i]['orderId']] = [];
+					}
+					prevState.orderProblemData[res[i]['orderId']].push(
+						 {
+							 problemId: res[i]['problemId'],
+							 orderStatus: res[i]['orderStatus'],
+							 problemDescription: res[i]['problemDescription'],
+							 date: res[i]['date'],
+							 title: res[i]['title']
+						 }
+					);
+				}
+				//console.log("Problem Info: ",prevState.orderProblemData);
+				return prevState;
+			});
+		}).catch(error => {
+			console.log("Hubo el error: ",error);
+		});
+	};
 
 	getOrderMovies = () => {
 		let me = this;
@@ -374,6 +418,7 @@ class AdminLayout extends Component {
 		this.getOrders();
 		this.getOrderMovies();
 	    this.refreshJWT();
+	    this.getOrderProblems();
     };
 
     logout = () => {
@@ -462,6 +507,7 @@ class AdminLayout extends Component {
 				return <OrderProfile
 					 order={this.state.recordDisplayed}
 					 orderMovies={this.state.orderMovieData[this.state.recordDisplayed['orderId']]}
+					 orderProblems={this.state.orderProblemData[this.state.recordDisplayed['orderId']]}
 					 goBack={this.setTabsDisplay}
 					 updateStatus={this.getUpdateOrderStatus}
 					 nextStatusMessage={this.state.nextStatusMessage}
