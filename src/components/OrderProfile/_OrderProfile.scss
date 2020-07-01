@@ -21,9 +21,12 @@
   background-color: slategray;
   outline: 1px solid #ECECF3;
 }
-.movieCardImage {
+.movieCardImageCtn {
   height: 200px;
-  width: 170px;
+}
+.movieCardImage {
+  height: 100%;
+  width: 100%;
 }
 .pedidoCtn {
 

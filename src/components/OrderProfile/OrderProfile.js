@@ -96,7 +96,7 @@ class OrderProfile extends Component {
 	CustomCard = (i) => {
 		return (
 			 <Row justify={"start"}>
-				 <Col span={10}>
+				 <Col className={"movieCardImageCtn"} span={10}>
 					 <img className={"movieCardImage"} alt="Image movie" src={this.props.orderMovies[i]['image']} />
 				 </Col>
 				 <Col span={10}>
@@ -187,7 +187,6 @@ class OrderProfile extends Component {
 			 <Row>
 				 <TextArea
 					  placeholder="Título"
-					  autoSize
 					  value={this.state.problemTitle}
 					  onChange={this.onChangeTitle}
 				 />
@@ -196,7 +195,6 @@ class OrderProfile extends Component {
 					  value={this.state.problemDescription}
 					  onChange={this.onChange}
 					  placeholder="Descripción"
-					  autoSize={{ minRows: 3, maxRows: 5 }}
 				 />
 				 <Button
 					  type={'danger'}
