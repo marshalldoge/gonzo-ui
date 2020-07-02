@@ -4,20 +4,18 @@ import Modal from 'react-modal';
 import "antd/dist/antd.css";
 import "./_adminLayout.scss";
 import {deleteCookie, getCookie, getJWtProperty, withParams,isTokenValid, tokenTimeLeft, getRoles} from "../../utils";
-import {setIdAppUser,setAppUser,setModules,setClientData,setNitIdClientHashMap,
-    setClientBillNameArray,setClientNitArray,setNitClientHashMap,setItemQuantityHashMap,
-    setItemQuantityCode, setWarehouse, setShift, setCompany, setCurrency, setMeasure} from "../../redux/actions";
 import moment from "moment";
 import {connect} from "react-redux";
 import * as constants from "../../constants";
 import LoadingGif from'../../assets/gif/loading.gif';
-import { Row,Col,Button,Layout, Menu, Breadcrumb, Typography, Select, Tabs, Card } from 'antd';
+import { Row,Col,Button,Layout, Menu, Breadcrumb, Typography, Select, Tabs, Card, Input } from 'antd';
 import Logo from "../../assets/logos/piratebayLogo.png";
 import * as columns from './TableColumns';
 const { Header, Content, Footer } = Layout;
 const {Title} = Typography;
 const { Option } = Select;
 const { TabPane } = Tabs;
+const { Search } = Input;
 
 
 const UserTable = React.lazy(() => import("../../views/UserTable/UserTable"));
@@ -52,7 +50,8 @@ class AdminLayout extends Component {
 	    orderProblemData: {},
 	    recordDisplayed: {},
 	    nextStatusMessage: "",
-	    activeKey: "1"
+	    activeKey: "1",
+	    searchValue: ""
     };
 
 	getOrderProblems = () => {
@@ -277,6 +276,7 @@ class AdminLayout extends Component {
 		    }
 	    }).then(res => {
 		    me.setState ((prevState) =>{
+		    	prevState.orderData = res;
 		    	for(let i = 0; i < res.length; i++) {
 		    		switch(res[i]['orderStatus']){
 					    case 1:
@@ -486,6 +486,63 @@ class AdminLayout extends Component {
 		})
 	};
 
+	setTablesData = (filter) => {
+		//console.log("Filtering with "+filter);
+		this.setState ((prevState) =>{
+			prevState.paidOrderData = [];
+			prevState.preparedOrderData = [];
+			prevState.dispatchedOrderData = [];
+			prevState.deliveredOrderData = [];
+			for(let i = 0; i < prevState.orderData.length; i++) {
+				let includesFilter = ((prevState.orderData[i]['orderId']).toString().includes(filter));
+				//console.log((prevState.orderData[i]['orderId']).toString()," includes ",filter,includesFilter);
+				if(!includesFilter)continue;
+				switch(prevState.orderData[i]['orderStatus']){
+					case 1:
+						prevState.paidOrderData.push(
+							 {
+								 ...prevState.orderData[i],
+								 key: i
+							 });
+						break;
+					case 2:
+						prevState.preparedOrderData.push(
+							 {
+								 ...prevState.orderData[i],
+								 key: i
+							 });
+						break;
+					case 3:
+						prevState.dispatchedOrderData.push(
+							 {
+								 ...prevState.orderData[i],
+								 key: i
+							 });
+						break;
+					case 4:
+						prevState.deliveredOrderData.push(
+							 {
+								 ...prevState.orderData[i],
+								 key: i
+							 });
+						break;
+				}
+			}
+			return prevState;
+		});
+	};
+
+	Filter = () => {
+		return(
+			 <Search placeholder="Buscar pedido..." onSearch={value => {
+				 this.setState({
+					 searchValue: value
+				 });
+				 this.setTablesData(value);
+			 }} enterButton />
+		);
+	};
+
 	Body = () => {
 		let me = this;
 		switch(this.state.display) {
@@ -502,6 +559,7 @@ class AdminLayout extends Component {
 			case "ORDER_TABS":
 				return (
 					 <div>
+						 {this.Filter()}
 						 <Tabs defaultActiveKey={this.state.activeKey} centered>
 							 <TabPane tab="Pagado" key="1">
 								 <ReactTable

@@ -16,7 +16,6 @@ class ReactTable extends Component {
 
 	render() {
 		let me = this;
-		console.log("Props in table: ",this.props);
 		return (
 			 <Table
 				  columns={this.props.columns}
