@@ -104,7 +104,7 @@ class AdminLayout extends Component {
 			orderId: orderId
 		};
 		let url = withParams(constants.BACKEND_URL+"/api/v1/problems",params);
-		let date = moment().format('YYYY-MM-DD[T]HH:mm:ss');
+		let date = moment().format('YYYY-MM-DD HH:mm:ss');
 		let body = JSON.stringify({
 			title: title,
 			problemDescription: description,
@@ -185,7 +185,7 @@ class AdminLayout extends Component {
 
 	getUpdateOrderStatus = (orderId, orderStatus) => {
 		//console.log("Updating order ",orderId," to status ",orderStatus);
-		let date = moment().format('YYYY-MM-DD[T]HH:mm:ss');
+		let date = moment().format('YYYY-MM-DD HH:mm:ss');
 		let me = this;
 		let params = {
 			orderStatus: orderStatus,
@@ -227,7 +227,7 @@ class AdminLayout extends Component {
 
 	updatePreparedCopies = (orderId, preparedCopies) => {
 		//console.log("Updating order ",orderId," to UPDATE COPIES:  ",preparedCopies);
-		let date = moment().format('YYYY-MM-DD[T]HH:mm:ss');
+		let date = moment().format('YYYY-MM-DD HH:mm:ss');
 		let me = this;
 		var body = JSON.stringify(preparedCopies);
 		var url = constants.BACKEND_URL+"/api/v1/orders/updatePreparedQuantities/"+orderId.toString();
@@ -496,9 +496,10 @@ class AdminLayout extends Component {
 			prevState.dispatchedOrderData = [];
 			prevState.deliveredOrderData = [];
 			for(let i = 0; i < prevState.orderData.length; i++) {
-				let includesFilter = ((prevState.orderData[i]['orderId']).toString().includes(filter));
+				let includesOrderIdFilter = ((prevState.orderData[i]['orderId']).toString().toLowerCase().includes(filter));
+				let includesNameFilter = ((prevState.orderData[i]['firstName']).toString().toLowerCase().includes(filter));
 				//console.log((prevState.orderData[i]['orderId']).toString()," includes ",filter,includesFilter);
-				if(!includesFilter)continue;
+				if(!(includesOrderIdFilter || includesNameFilter))continue;
 				switch(prevState.orderData[i]['orderStatus']){
 					case 1:
 						prevState.paidOrderData.push(

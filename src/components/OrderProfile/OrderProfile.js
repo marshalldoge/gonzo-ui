@@ -226,12 +226,19 @@ class OrderProfile extends Component {
 				 <Button
 					  type={'danger'}
 					  block
-					  onClick={() => this.props.createProblem(
-					  	 this.state.problemTitle,
-						   this.state.problemDescription,
-						   this.props.order['orderStatus'],
-						   this.props.order['orderId']
-					  )}
+					  disabled={this.state.problemTitle.length === 0 || this.state.problemDescription.length === 0}
+					  onClick={() => {
+					  	this.props.createProblem(
+					  		 this.state.problemTitle,
+						     this.state.problemDescription,
+						     this.props.order['orderStatus'],
+						     this.props.order['orderId']
+					    );
+					  	this.setState({
+						    problemTitle: "",
+						    problemDescription: ""
+					  	})
+					  }}
 				 >Reportar Problema</Button>
 			 </Row>
 		)
