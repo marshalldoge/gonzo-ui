@@ -1,11 +1,11 @@
 import React, {Component, Suspense} from "react";
-import {Row,Col, Card, Typography, Button,Input, Alert, Collapse, Steps, List} from 'antd';
+import {Row,Col, Card, Typography, Button,Input, Alert, Collapse, Steps, List, Descriptions} from 'antd';
 import { UserOutlined, SolutionOutlined, LoadingOutlined, SmileOutlined } from '@ant-design/icons';
 import './_OrderProfile.scss'
 import moment from "../../pages/AdminLayout/AdminLayout";
 // A great library for fuzzy filtering/sorting items
 const { Meta } = Card;
-const { Title } = Typography;
+const { Title , Text} = Typography;
 const { TextArea } = Input;
 const { Panel } = Collapse;
 const { Step } = Steps;
@@ -16,7 +16,10 @@ class OrderProfile extends Component {
 		preparedMovieId: [],
 		disableConfirmPrepareButton: true,
 		problemDescription: "",
-		problemTitle: ""
+		problemTitle: "",
+		originalOrderCost: 0,
+		realOrderCost: 0,
+		hasMissingCopies: false
 	};
 
 
@@ -82,10 +85,24 @@ class OrderProfile extends Component {
 	};
 
 	OrderDescription = () => {
+		let costNumber = <p>{''}</p>;
+		if(this.state.hasMissingCopies){
+			costNumber = <Text type={'warning'} delete>{this.state.originalOrderCost+"Bs."}</Text>;
+		}
+		let defaultGoodCost = this.state.realOrderCost;
+		if(defaultGoodCost === 0){
+			defaultGoodCost = this.state.originalOrderCost;
+		}
+
 		return (
 			 <Row className={"descriptionRow"}>
 				 <Col>
-					 <p>Fecha</p>
+					 <Descriptions title="Detalles" size={'default'}>
+						 <Descriptions.Item key={1} label="Cliente">{this.props.order['firstName']}</Descriptions.Item>
+						 <Descriptions.Item key={2} label="Costo">
+							 {costNumber}   {defaultGoodCost+" Bs."}
+						 </Descriptions.Item>
+					 </Descriptions>
 
 				 </Col>
 			 </Row>
@@ -95,11 +112,11 @@ class OrderProfile extends Component {
 
 	CustomCard = (i) => {
 		return (
-			 <Row justify={"start"}>
+			 <Row justify={"start"} key={i}>
 				 <Col className={"movieCardImageCtn"} span={10}>
 					 <img className={"movieCardImage"} alt="Image movie" src={this.props.orderMovies[i]['image']} />
 				 </Col>
-				 <Col span={10}>
+				 <Col span={10} offset={2}>
 					<Row>
 						{"Blue-Ray "+this.props.orderMovies[i]['name']}
 					</Row>
@@ -119,8 +136,8 @@ class OrderProfile extends Component {
 			cards.push(
 				 this.CustomCard(i)
 			);
-			cards.push(<br/>);
-			cards.push(<br/>);
+			cards.push(<br key={i.toString()+".1"}/>);
+			cards.push(<br key={i.toString()+".2"}/>);
 		}
 		return cards;
 	};
@@ -129,8 +146,18 @@ class OrderProfile extends Component {
 		let me = this;
 		this.setState ((prevState) =>{
 			let inputs = [];
+			let costSum = 0;
+			let costSum2 = 0;
 			for(let i = 0; i < this.props.orderMovies.length; i++) {
 				inputs.push("");
+				costSum += (this.props.orderMovies[i]['cost']*this.props.orderMovies[i]['quantity']);
+				costSum2 += (this.props.orderMovies[i]['cost']*this.props.orderMovies[i]['preparedQuantity']);
+			}
+			console.log("Two costs: ",costSum, " - ",costSum2);
+			prevState.originalOrderCost = costSum;
+			prevState.realOrderCost = costSum2;
+			if(costSum !== costSum2 && costSum2 !== 0) {
+				prevState.hasMissingCopies = true;
 			}
 			prevState.preparedInput = inputs;
 			return prevState;
@@ -262,47 +289,50 @@ class OrderProfile extends Component {
 				break;
 		}
 		return (
-			 <Row className={"orderProfileCtn"}>
-				 <Col span={24}>
-					 <Row className={"pedidoCtn"} justify="flex-start">
-						 <Col span={6}>
-							 <Title level={2}>{"Pedido "+this.props.order['orderId']}</Title>
-						 </Col>
-					 </Row>
-					 <Row className={"moviesCtn"} justify="start">
-						 <Col span={12}>
-							 <Title level={2}>Películas</Title>
-							 <Row className={"movieCardsRowCtn"} justify="start">
-								 <Col className={"movieCardsCtn"} span={22}>
-									 {this.MovieCards()}
-								 </Col>
-							 </Row>
-						 </Col>
-						 <Col span={12}>
-							 <Title level={2}>Estado</Title>
-							 {this.OrderStatus()}
-							 <Title level={2}>Problemas</Title>
-							 {this.OrderProblems()}
-							 <Title level={4}>Agregar Problema</Title>
-							 {this.NewProblemForm()}
-						 </Col>
-					 </Row>
-					 <br/>
-					 <br/>
-					 <Row justify="space-around">
-						 <Col>
-							 <Button type="dashed" size={'large'} block onClick={this.props.goBack}>
-								 Atrás
-							 </Button>
-						 </Col>
-						 <Col>
-							 {this.nextStatusButton()}
-						 </Col>
-					 </Row>
+			 <div>
+				 <Row className={"pedidoCtn"} justify="flex-start">
+					 <Col span={6}>
+						 <Title level={2}>{"Pedido "+this.props.order['orderId']}</Title>
+					 </Col>
+				 </Row>
+				 {this.OrderDescription()}
+				 <Row className={"orderProfileCtn"}>
+					 <Col span={24}>
+						 <Row className={"moviesCtn"} justify="start">
+							 <Col span={12}>
+								 <Title level={3}>Películas</Title>
+								 <Row className={"movieCardsRowCtn"} justify="start">
+									 <Col className={"movieCardsCtn"} span={22}>
+										 {this.MovieCards()}
+									 </Col>
+								 </Row>
+							 </Col>
+							 <Col span={12}>
+								 <Title level={3}>Estado</Title>
+								 {this.OrderStatus()}
+								 <Title level={3}>Problemas</Title>
+								 {this.OrderProblems()}
+								 <Title level={4}>Agregar Problema</Title>
+								 {this.NewProblemForm()}
+							 </Col>
+						 </Row>
+						 <br/>
+						 <br/>
+						 <Row justify="space-around">
+							 <Col>
+								 <Button type="dashed" size={'large'} block onClick={this.props.goBack}>
+									 Atrás
+								 </Button>
+							 </Col>
+							 <Col>
+								 {this.nextStatusButton()}
+							 </Col>
+						 </Row>
 
-				 </Col>
+					 </Col>
 
-			 </Row>
+				 </Row>
+			 </div>
 		)
 	}
 }

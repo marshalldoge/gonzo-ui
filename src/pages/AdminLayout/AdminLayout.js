@@ -158,7 +158,7 @@ class AdminLayout extends Component {
 		}).then(res => {
 			//console.log("Success Getting MOVIES info", res);
 			me.setState ((prevState) =>{
-
+				prevState.orderMovieData = {};
 				for(let i = 0; i < res.length; i++) {
 					if(prevState.orderMovieData[res[i]['orderId']] === undefined) {
 						prevState.orderMovieData[res[i]['orderId']] = [];
@@ -170,7 +170,8 @@ class AdminLayout extends Component {
 							 quantity: res[i]['quantity'],
 							 warehouseId: res[i]['warehouseId'],
 							 preparedQuantity: res[i]['preparedQuantity'],
-							 movieId: res[i]['movieId']
+							 movieId: res[i]['movieId'],
+							 cost: res[i]['cost']
 						 }
 					);
 				}
@@ -248,6 +249,7 @@ class AdminLayout extends Component {
 		}).then(res => {
 			//console.log("Success Updating status info", res);
 			this.setState ((prevState) =>{
+				me.getOrderMovies();
 				prevState.display = 'ORDER_TABS';
 				return prevState;
 			});
